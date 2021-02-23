@@ -1,0 +1,1 @@
+/usr/bin/c++  -g  -rdynamic CMakeFiles/sim_boem_app.dir/sim_boem_app.o  -o sim_boem_app  -lceres -llib 

@@ -1,7 +1,9 @@
 #!/bin/bash
 
-./build/sim/sim_opt_app
-./build/sim/sim_em_app
-./build/sim/sim_boem_app
+./build/sim/sim_visualization/sim_opt_vis
+./build/sim/sim_visualization/sim_em_vis
+./build/sim/sim_visualization/sim_boem_vis
 
-python3 eval_sim.py
+#eval "$(conda shell.bash hook)"
+#conda activate slam_demo_env
+#python3 eval_sim.py

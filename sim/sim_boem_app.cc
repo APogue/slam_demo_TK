@@ -212,6 +212,7 @@ class ExpLandmarkOptSLAM {
 
       State* state_ptr = new State;
 
+      state_ptr->timestamp_= T;
       state_ptr->q_ = quat_pos(Eigen::Quaterniond(rot));
       state_ptr->v_ = vel;
       state_ptr->p_ = pos;

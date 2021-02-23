@@ -1,0 +1,1 @@
+/usr/bin/c++  -g  -rdynamic CMakeFiles/sim_opt_app.dir/sim_opt_app.o  -o sim_opt_app  -lceres -llib 
