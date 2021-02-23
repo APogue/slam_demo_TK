@@ -343,8 +343,6 @@ class ExpLandmarkOptSLAM {
     return true;
   }
 
-
-
   bool SetupOptProblem() {
     int state_interval = 50;
     int state_start_ = 1;
@@ -367,10 +365,6 @@ class ExpLandmarkOptSLAM {
 
       // the following states
       for (size_t i = state_start_; i < state_end_; ++i) {
-//
-//        q0 = state_para_vec_.at(i-1)->GetRotationBlock()->estimate();
-//        v0 = state_para_vec_.at(i-1)->GetVelocityBlock()->estimate();
-//        p0 = state_para_vec_.at(i-1)->GetPositionBlock()->estimate();
 
         Eigen::Vector3d gyr = imu_vec_.at(i-1)->gyr_;
         Eigen::Vector3d acc = imu_vec_.at(i-1)->acc_;
@@ -618,11 +612,11 @@ class ExpLandmarkOptSLAM {
 
 
 int main(int argc, char **argv) {
-//  srand((unsigned int) time(NULL)); //eigen uses the random number generator of the standard lib
+  srand((unsigned int) time(NULL)); //eigen uses the random number generator of the standard lib
   google::InitGoogleLogging(argv[0]);
   std::vector<double>   process_time_vec;
   int k;
-  for (size_t i = 0; i < 1; ++i) {
+  for (size_t i = 0; i < 5; ++i) {
     k = 350;
     for (size_t m=0; m<1; ++m) {
       ExpLandmarkOptSLAM slam_problem("config/config_sim.yaml", k);
@@ -646,8 +640,8 @@ int main(int argc, char **argv) {
       std::cout << "The entire time is " << dt << " sec." << std::endl;
       process_time_vec.push_back(dt);
 
-//    slam_problem.OutputResult("result/sim/vis/opt_"+std::to_string(i)+".csv");
-      slam_problem.OutputResult("result/sim/test/opt_test.csv");
+    slam_problem.OutputResult("result/sim/test/opt_"+std::to_string(i)+".csv");
+//      slam_problem.OutputResult("result/sim/test/opt_test.csv");
 
 //    slam_problem.OutputLandmarks("result/sim/vis/");
 //    slam_problem.OutputGroundtruth("result/sim/vis/");
