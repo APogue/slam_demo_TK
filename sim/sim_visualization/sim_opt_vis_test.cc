@@ -607,7 +607,7 @@ int main(int argc, char **argv) {
   google::InitGoogleLogging(argv[0]);
   std::vector<double>   process_time_vec;
   int k;
-  for (size_t i = 0; i < 20; ++i) {
+  for (size_t i = 0; i < 1; ++i) {
     k = 350;
     for (size_t m=0; m<1; ++m) {
       ExpLandmarkOptSLAM slam_problem("config/config_sim.yaml", k);

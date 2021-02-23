@@ -261,6 +261,19 @@ sim_boem_app/fast:
 .PHONY : sim_boem_app/fast
 
 #=============================================================================
+# Target rules for targets named sim_opt_vis
+
+# Build rule for target.
+sim_opt_vis: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 sim_opt_vis
+.PHONY : sim_opt_vis
+
+# fast build rule for target.
+sim_opt_vis/fast:
+	$(MAKE) $(MAKESILENT) -f sim/sim_visualization/CMakeFiles/sim_opt_vis.dir/build.make sim/sim_visualization/CMakeFiles/sim_opt_vis.dir/build
+.PHONY : sim_opt_vis/fast
+
+#=============================================================================
 # Target rules for targets named sim_em_vis
 
 # Build rule for target.
@@ -287,17 +300,17 @@ sim_boem_vis/fast:
 .PHONY : sim_boem_vis/fast
 
 #=============================================================================
-# Target rules for targets named sim_opt_vis
+# Target rules for targets named sim_opt_vis_test
 
 # Build rule for target.
-sim_opt_vis: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 sim_opt_vis
-.PHONY : sim_opt_vis
+sim_opt_vis_test: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 sim_opt_vis_test
+.PHONY : sim_opt_vis_test
 
 # fast build rule for target.
-sim_opt_vis/fast:
-	$(MAKE) $(MAKESILENT) -f sim/sim_visualization/CMakeFiles/sim_opt_vis.dir/build.make sim/sim_visualization/CMakeFiles/sim_opt_vis.dir/build
-.PHONY : sim_opt_vis/fast
+sim_opt_vis_test/fast:
+	$(MAKE) $(MAKESILENT) -f sim/sim_visualization/CMakeFiles/sim_opt_vis_test.dir/build.make sim/sim_visualization/CMakeFiles/sim_opt_vis_test.dir/build
+.PHONY : sim_opt_vis_test/fast
 
 #=============================================================================
 # Target rules for targets named reprojection_error_test
@@ -361,6 +374,7 @@ help:
 	@echo "... sim_em_vis"
 	@echo "... sim_opt_app"
 	@echo "... sim_opt_vis"
+	@echo "... sim_opt_vis_test"
 	@echo "... traj_process_app"
 .PHONY : help
 

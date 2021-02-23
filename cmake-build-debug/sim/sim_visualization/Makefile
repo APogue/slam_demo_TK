@@ -131,6 +131,21 @@ depend:
 .PHONY : depend
 
 # Convenience name for target.
+sim/sim_visualization/CMakeFiles/sim_opt_vis.dir/rule:
+	cd /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 sim/sim_visualization/CMakeFiles/sim_opt_vis.dir/rule
+.PHONY : sim/sim_visualization/CMakeFiles/sim_opt_vis.dir/rule
+
+# Convenience name for target.
+sim_opt_vis: sim/sim_visualization/CMakeFiles/sim_opt_vis.dir/rule
+
+.PHONY : sim_opt_vis
+
+# fast build rule for target.
+sim_opt_vis/fast:
+	cd /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug && $(MAKE) $(MAKESILENT) -f sim/sim_visualization/CMakeFiles/sim_opt_vis.dir/build.make sim/sim_visualization/CMakeFiles/sim_opt_vis.dir/build
+.PHONY : sim_opt_vis/fast
+
+# Convenience name for target.
 sim/sim_visualization/CMakeFiles/sim_em_vis.dir/rule:
 	cd /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 sim/sim_visualization/CMakeFiles/sim_em_vis.dir/rule
 .PHONY : sim/sim_visualization/CMakeFiles/sim_em_vis.dir/rule
@@ -161,19 +176,19 @@ sim_boem_vis/fast:
 .PHONY : sim_boem_vis/fast
 
 # Convenience name for target.
-sim/sim_visualization/CMakeFiles/sim_opt_vis.dir/rule:
-	cd /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 sim/sim_visualization/CMakeFiles/sim_opt_vis.dir/rule
-.PHONY : sim/sim_visualization/CMakeFiles/sim_opt_vis.dir/rule
+sim/sim_visualization/CMakeFiles/sim_opt_vis_test.dir/rule:
+	cd /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 sim/sim_visualization/CMakeFiles/sim_opt_vis_test.dir/rule
+.PHONY : sim/sim_visualization/CMakeFiles/sim_opt_vis_test.dir/rule
 
 # Convenience name for target.
-sim_opt_vis: sim/sim_visualization/CMakeFiles/sim_opt_vis.dir/rule
+sim_opt_vis_test: sim/sim_visualization/CMakeFiles/sim_opt_vis_test.dir/rule
 
-.PHONY : sim_opt_vis
+.PHONY : sim_opt_vis_test
 
 # fast build rule for target.
-sim_opt_vis/fast:
-	cd /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug && $(MAKE) $(MAKESILENT) -f sim/sim_visualization/CMakeFiles/sim_opt_vis.dir/build.make sim/sim_visualization/CMakeFiles/sim_opt_vis.dir/build
-.PHONY : sim_opt_vis/fast
+sim_opt_vis_test/fast:
+	cd /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug && $(MAKE) $(MAKESILENT) -f sim/sim_visualization/CMakeFiles/sim_opt_vis_test.dir/build.make sim/sim_visualization/CMakeFiles/sim_opt_vis_test.dir/build
+.PHONY : sim_opt_vis_test/fast
 
 sim_boem_vis.o: sim_boem_vis.cc.o
 
@@ -256,6 +271,33 @@ sim_opt_vis.cc.s:
 	cd /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug && $(MAKE) $(MAKESILENT) -f sim/sim_visualization/CMakeFiles/sim_opt_vis.dir/build.make sim/sim_visualization/CMakeFiles/sim_opt_vis.dir/sim_opt_vis.cc.s
 .PHONY : sim_opt_vis.cc.s
 
+sim_opt_vis_test.o: sim_opt_vis_test.cc.o
+
+.PHONY : sim_opt_vis_test.o
+
+# target to build an object file
+sim_opt_vis_test.cc.o:
+	cd /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug && $(MAKE) $(MAKESILENT) -f sim/sim_visualization/CMakeFiles/sim_opt_vis_test.dir/build.make sim/sim_visualization/CMakeFiles/sim_opt_vis_test.dir/sim_opt_vis_test.cc.o
+.PHONY : sim_opt_vis_test.cc.o
+
+sim_opt_vis_test.i: sim_opt_vis_test.cc.i
+
+.PHONY : sim_opt_vis_test.i
+
+# target to preprocess a source file
+sim_opt_vis_test.cc.i:
+	cd /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug && $(MAKE) $(MAKESILENT) -f sim/sim_visualization/CMakeFiles/sim_opt_vis_test.dir/build.make sim/sim_visualization/CMakeFiles/sim_opt_vis_test.dir/sim_opt_vis_test.cc.i
+.PHONY : sim_opt_vis_test.cc.i
+
+sim_opt_vis_test.s: sim_opt_vis_test.cc.s
+
+.PHONY : sim_opt_vis_test.s
+
+# target to generate assembly for a file
+sim_opt_vis_test.cc.s:
+	cd /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug && $(MAKE) $(MAKESILENT) -f sim/sim_visualization/CMakeFiles/sim_opt_vis_test.dir/build.make sim/sim_visualization/CMakeFiles/sim_opt_vis_test.dir/sim_opt_vis_test.cc.s
+.PHONY : sim_opt_vis_test.cc.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -267,6 +309,7 @@ help:
 	@echo "... sim_boem_vis"
 	@echo "... sim_em_vis"
 	@echo "... sim_opt_vis"
+	@echo "... sim_opt_vis_test"
 	@echo "... sim_boem_vis.o"
 	@echo "... sim_boem_vis.i"
 	@echo "... sim_boem_vis.s"
@@ -276,6 +319,9 @@ help:
 	@echo "... sim_opt_vis.o"
 	@echo "... sim_opt_vis.i"
 	@echo "... sim_opt_vis.s"
+	@echo "... sim_opt_vis_test.o"
+	@echo "... sim_opt_vis_test.i"
+	@echo "... sim_opt_vis_test.s"
 .PHONY : help
 
 

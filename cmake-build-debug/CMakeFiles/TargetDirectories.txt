@@ -17,10 +17,11 @@
 /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug/sim/CMakeFiles/sim_em_app.dir
 /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug/sim/CMakeFiles/sim_boem_app.dir
 /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug/sim/sim_visualization/CMakeFiles/rebuild_cache.dir
+/home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug/sim/sim_visualization/CMakeFiles/edit_cache.dir
+/home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug/sim/sim_visualization/CMakeFiles/sim_opt_vis.dir
 /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug/sim/sim_visualization/CMakeFiles/sim_em_vis.dir
 /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug/sim/sim_visualization/CMakeFiles/sim_boem_vis.dir
-/home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug/sim/sim_visualization/CMakeFiles/sim_opt_vis.dir
-/home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug/sim/sim_visualization/CMakeFiles/edit_cache.dir
+/home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug/sim/sim_visualization/CMakeFiles/sim_opt_vis_test.dir
 /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug/test/CMakeFiles/rebuild_cache.dir
 /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug/test/CMakeFiles/reprojection_error_test.dir
 /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug/test/CMakeFiles/edit_cache.dir
