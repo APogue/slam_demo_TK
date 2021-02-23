@@ -616,7 +616,7 @@ int main(int argc, char **argv) {
   google::InitGoogleLogging(argv[0]);
   std::vector<double>   process_time_vec;
   int k;
-  for (size_t i = 0; i < 5; ++i) {
+  for (size_t i = 0; i < 50; ++i) {
     k = 350;
     for (size_t m=0; m<1; ++m) {
       ExpLandmarkOptSLAM slam_problem("config/config_sim.yaml", k);
@@ -640,7 +640,7 @@ int main(int argc, char **argv) {
       std::cout << "The entire time is " << dt << " sec." << std::endl;
       process_time_vec.push_back(dt);
 
-    slam_problem.OutputResult("result/sim/test/opt_"+std::to_string(i)+".csv");
+    slam_problem.OutputResult("result/sim/expanding_window/opt_"+std::to_string(i)+".csv");
 //      slam_problem.OutputResult("result/sim/test/opt_test.csv");
 
 //    slam_problem.OutputLandmarks("result/sim/vis/");

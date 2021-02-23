@@ -71,7 +71,7 @@ target_link_libraries(sim_boem_vis
 )
 
 add_executable(sim_opt_vis_test
-        sim_opt_vis_test.cc
+        sim_opt_vis_exp_win.cc
         )
 
 target_include_directories(sim_opt_vis_test

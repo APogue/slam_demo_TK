@@ -603,7 +603,7 @@ class ExpLandmarkOptSLAM {
 
 
 int main(int argc, char **argv) {
-//  srand((unsigned int) time(NULL)); //eigen uses the random number generator of the standard lib
+  srand((unsigned int) time(NULL)); //eigen uses the random number generator of the standard lib
   google::InitGoogleLogging(argv[0]);
   std::vector<double>   process_time_vec;
   int k;
