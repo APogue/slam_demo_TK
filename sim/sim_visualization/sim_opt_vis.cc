@@ -603,13 +603,13 @@ class ExpLandmarkOptSLAM {
 
 
 int main(int argc, char **argv) {
-  srand((unsigned int) time(NULL)); //eigen uses the random number generator of the standard lib
+//  srand((unsigned int) time(NULL)); //eigen uses the random number generator of the standard lib
   google::InitGoogleLogging(argv[0]);
   std::vector<double>   process_time_vec;
   int k;
-  for (size_t i = 0; i < 20; ++i) {
+  for (size_t i = 0; i < 1; ++i) { // this loop is for the monte carlo
     k = 350;
-    for (size_t m=0; m<1; ++m) {
+    for (size_t m=0; m<1; ++m) { // this loop is for the timing
       ExpLandmarkOptSLAM slam_problem("config/config_sim.yaml", k);
       slam_problem.CreateTrajectory();
       slam_problem.CreateLandmark();
@@ -632,9 +632,12 @@ int main(int argc, char **argv) {
       process_time_vec.push_back(dt);
 
 //    slam_problem.OutputResult("result/sim/vis/opt_"+std::to_string(i)+".csv");
+    slam_problem.OutputResult("result/sim/test/opt.csv");
 
 //    slam_problem.OutputLandmarks("result/sim/vis/");
 //    slam_problem.OutputGroundtruth("result/sim/vis/");
+    slam_problem.OutputGroundtruth("result/sim/test/");
+
 //      k += 50;
     }
 //    std::ofstream output_file("result/sim/vis/opt_time_"+std::to_string(i)+".csv");
