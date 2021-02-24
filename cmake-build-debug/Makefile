@@ -274,6 +274,19 @@ sim_opt_vis/fast:
 .PHONY : sim_opt_vis/fast
 
 #=============================================================================
+# Target rules for targets named sim_boem_vis_exp_win
+
+# Build rule for target.
+sim_boem_vis_exp_win: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 sim_boem_vis_exp_win
+.PHONY : sim_boem_vis_exp_win
+
+# fast build rule for target.
+sim_boem_vis_exp_win/fast:
+	$(MAKE) $(MAKESILENT) -f sim/sim_visualization/CMakeFiles/sim_boem_vis_exp_win.dir/build.make sim/sim_visualization/CMakeFiles/sim_boem_vis_exp_win.dir/build
+.PHONY : sim_boem_vis_exp_win/fast
+
+#=============================================================================
 # Target rules for targets named sim_em_vis
 
 # Build rule for target.
@@ -300,17 +313,30 @@ sim_boem_vis/fast:
 .PHONY : sim_boem_vis/fast
 
 #=============================================================================
-# Target rules for targets named sim_opt_vis_test
+# Target rules for targets named sim_em_vis_exp_win
 
 # Build rule for target.
-sim_opt_vis_test: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 sim_opt_vis_test
-.PHONY : sim_opt_vis_test
+sim_em_vis_exp_win: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 sim_em_vis_exp_win
+.PHONY : sim_em_vis_exp_win
 
 # fast build rule for target.
-sim_opt_vis_test/fast:
-	$(MAKE) $(MAKESILENT) -f sim/sim_visualization/CMakeFiles/sim_opt_vis_test.dir/build.make sim/sim_visualization/CMakeFiles/sim_opt_vis_test.dir/build
-.PHONY : sim_opt_vis_test/fast
+sim_em_vis_exp_win/fast:
+	$(MAKE) $(MAKESILENT) -f sim/sim_visualization/CMakeFiles/sim_em_vis_exp_win.dir/build.make sim/sim_visualization/CMakeFiles/sim_em_vis_exp_win.dir/build
+.PHONY : sim_em_vis_exp_win/fast
+
+#=============================================================================
+# Target rules for targets named sim_opt_vis_exp_win
+
+# Build rule for target.
+sim_opt_vis_exp_win: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 sim_opt_vis_exp_win
+.PHONY : sim_opt_vis_exp_win
+
+# fast build rule for target.
+sim_opt_vis_exp_win/fast:
+	$(MAKE) $(MAKESILENT) -f sim/sim_visualization/CMakeFiles/sim_opt_vis_exp_win.dir/build.make sim/sim_visualization/CMakeFiles/sim_opt_vis_exp_win.dir/build
+.PHONY : sim_opt_vis_exp_win/fast
 
 #=============================================================================
 # Target rules for targets named reprojection_error_test
@@ -370,11 +396,13 @@ help:
 	@echo "... reprojection_error_test"
 	@echo "... sim_boem_app"
 	@echo "... sim_boem_vis"
+	@echo "... sim_boem_vis_exp_win"
 	@echo "... sim_em_app"
 	@echo "... sim_em_vis"
+	@echo "... sim_em_vis_exp_win"
 	@echo "... sim_opt_app"
 	@echo "... sim_opt_vis"
-	@echo "... sim_opt_vis_test"
+	@echo "... sim_opt_vis_exp_win"
 	@echo "... traj_process_app"
 .PHONY : help
 

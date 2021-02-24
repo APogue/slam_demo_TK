@@ -30,8 +30,8 @@ est_boem_error_q = np.zeros_like(gt_data['p_x'])
 def quat_rot_angle(q2, x2, y2, z2, i):
 	q1, x1, y1, z1 = gt_data['q_w'][i], gt_data['q_x'][i], gt_data['q_y'][i], gt_data['q_z'][i]
 	del_q = q1*q2 + x1*x2 + y1*y2 + z1*z2
-	del_x = q1*x2 - x1*q2 +y1*z2 -z1*y2
-	del_y = q1*y2 - y1*q2 -x1*z2 + z1*x2
+	del_x = q1*x2 - x1*q2 + y1*z2 - z1*y2
+	del_y = q1*y2 - y1*q2 - x1*z2 + z1*x2
 	del_z = q1*z2 - q2*z1 + x1*y2 - y1*x2
 	del_xyz = [del_x, del_y, del_z]
 	theta = 2*np.arctan2(np.linalg.norm(del_xyz), np.abs(del_q))
@@ -50,10 +50,10 @@ for i in range(len(gt_data['p_x'])):
 	est_boem_error_list_q = []
 
 	for k in range(0,50):
-		dr_data = pd.read_csv("result/sim/vis/dr_%s.csv" %k)
-		est_opt_data = pd.read_csv("result/sim/expanding_window/opt_%s.csv" %k)
-		est_em_data = pd.read_csv("result/sim/vis/em_%s.csv" %k)
-		est_boem_data = pd.read_csv("result/sim/vis/boem_%s.csv" %k)
+		dr_data = pd.read_csv("result/sim/long_traj/dr_%s.csv" %k)
+		est_opt_data = pd.read_csv("result/sim/long_traj/opt_%s.csv" %k)
+		est_em_data = pd.read_csv("result/sim/long_traj/em_%s.csv" %k)
+		est_boem_data = pd.read_csv("result/sim/long_traj/boem_%s.csv" %k)
 
 		dr_error_list_p.extend([(gt_data['p_x'][i]-dr_data['p_x'][i])**2, (gt_data['p_y'][i]-dr_data['p_y'][i])**2, (gt_data['p_z'][i]-dr_data['p_z'][i])**2])
 		est_opt_error_list_p.extend([(gt_data['p_x'][i]-est_opt_data['p_x'][i])**2, (gt_data['p_y'][i]-est_opt_data['p_y'][i])**2, (gt_data['p_z'][i]-est_opt_data['p_z'][i])**2])
