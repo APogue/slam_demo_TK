@@ -1031,7 +1031,7 @@
 		<Unit filename="/home/alexie/Documents/slam_demo_TK/slam_demo/sim/sim_visualization/sim_opt_vis.cc">
 			<Option target="sim_opt_vis"/>
 		</Unit>
-		<Unit filename="/home/alexie/Documents/slam_demo_TK/slam_demo/sim/sim_visualization/sim_opt_vis_test.cc">
+		<Unit filename="/home/alexie/Documents/slam_demo_TK/slam_demo/sim/sim_visualization/sim_opt_vis_exp_win.cc">
 			<Option target="sim_opt_vis_test"/>
 		</Unit>
 		<Unit filename="/home/alexie/Documents/slam_demo_TK/slam_demo/test/imu_error_test.cc">

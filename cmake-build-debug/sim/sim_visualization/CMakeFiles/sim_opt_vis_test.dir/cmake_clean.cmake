@@ -1,5 +1,5 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/sim_opt_vis_test.dir/sim_opt_vis_test.cc.o"
+  "CMakeFiles/sim_opt_vis_test.dir/sim_opt_vis_exp_win.cc.o"
   "sim_opt_vis_test"
   "sim_opt_vis_test.pdb"
 )

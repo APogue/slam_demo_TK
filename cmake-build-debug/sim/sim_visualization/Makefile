@@ -271,32 +271,32 @@ sim_opt_vis.cc.s:
 	cd /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug && $(MAKE) $(MAKESILENT) -f sim/sim_visualization/CMakeFiles/sim_opt_vis.dir/build.make sim/sim_visualization/CMakeFiles/sim_opt_vis.dir/sim_opt_vis.cc.s
 .PHONY : sim_opt_vis.cc.s
 
-sim_opt_vis_test.o: sim_opt_vis_test.cc.o
+sim_opt_vis_exp_win.o: sim_opt_vis_exp_win.cc.o
 
-.PHONY : sim_opt_vis_test.o
+.PHONY : sim_opt_vis_exp_win.o
 
 # target to build an object file
-sim_opt_vis_test.cc.o:
-	cd /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug && $(MAKE) $(MAKESILENT) -f sim/sim_visualization/CMakeFiles/sim_opt_vis_test.dir/build.make sim/sim_visualization/CMakeFiles/sim_opt_vis_test.dir/sim_opt_vis_test.cc.o
-.PHONY : sim_opt_vis_test.cc.o
+sim_opt_vis_exp_win.cc.o:
+	cd /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug && $(MAKE) $(MAKESILENT) -f sim/sim_visualization/CMakeFiles/sim_opt_vis_test.dir/build.make sim/sim_visualization/CMakeFiles/sim_opt_vis_test.dir/sim_opt_vis_exp_win.cc.o
+.PHONY : sim_opt_vis_exp_win.cc.o
 
-sim_opt_vis_test.i: sim_opt_vis_test.cc.i
+sim_opt_vis_exp_win.i: sim_opt_vis_exp_win.cc.i
 
-.PHONY : sim_opt_vis_test.i
+.PHONY : sim_opt_vis_exp_win.i
 
 # target to preprocess a source file
-sim_opt_vis_test.cc.i:
-	cd /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug && $(MAKE) $(MAKESILENT) -f sim/sim_visualization/CMakeFiles/sim_opt_vis_test.dir/build.make sim/sim_visualization/CMakeFiles/sim_opt_vis_test.dir/sim_opt_vis_test.cc.i
-.PHONY : sim_opt_vis_test.cc.i
+sim_opt_vis_exp_win.cc.i:
+	cd /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug && $(MAKE) $(MAKESILENT) -f sim/sim_visualization/CMakeFiles/sim_opt_vis_test.dir/build.make sim/sim_visualization/CMakeFiles/sim_opt_vis_test.dir/sim_opt_vis_exp_win.cc.i
+.PHONY : sim_opt_vis_exp_win.cc.i
 
-sim_opt_vis_test.s: sim_opt_vis_test.cc.s
+sim_opt_vis_exp_win.s: sim_opt_vis_exp_win.cc.s
 
-.PHONY : sim_opt_vis_test.s
+.PHONY : sim_opt_vis_exp_win.s
 
 # target to generate assembly for a file
-sim_opt_vis_test.cc.s:
-	cd /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug && $(MAKE) $(MAKESILENT) -f sim/sim_visualization/CMakeFiles/sim_opt_vis_test.dir/build.make sim/sim_visualization/CMakeFiles/sim_opt_vis_test.dir/sim_opt_vis_test.cc.s
-.PHONY : sim_opt_vis_test.cc.s
+sim_opt_vis_exp_win.cc.s:
+	cd /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug && $(MAKE) $(MAKESILENT) -f sim/sim_visualization/CMakeFiles/sim_opt_vis_test.dir/build.make sim/sim_visualization/CMakeFiles/sim_opt_vis_test.dir/sim_opt_vis_exp_win.cc.s
+.PHONY : sim_opt_vis_exp_win.cc.s
 
 # Help Target
 help:
@@ -319,9 +319,9 @@ help:
 	@echo "... sim_opt_vis.o"
 	@echo "... sim_opt_vis.i"
 	@echo "... sim_opt_vis.s"
-	@echo "... sim_opt_vis_test.o"
-	@echo "... sim_opt_vis_test.i"
-	@echo "... sim_opt_vis_test.s"
+	@echo "... sim_opt_vis_exp_win.o"
+	@echo "... sim_opt_vis_exp_win.i"
+	@echo "... sim_opt_vis_exp_win.s"
 .PHONY : help
 
 
