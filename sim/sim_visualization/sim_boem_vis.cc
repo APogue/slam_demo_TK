@@ -466,8 +466,6 @@ class ExpLandmarkOptSLAM {
 
 
 
-
-
       // E step
       for (size_t i=T; i < T+block_size; ++i) {
         state_estimate.at(i) = new Estimate;
@@ -842,9 +840,9 @@ int main(int argc, char **argv) {
   google::InitGoogleLogging(argv[0]);
   std::vector<double>   process_time_vec;
   int k;
-  for (size_t i = 0; i < 20; ++i) {
-    k = 100;
-    for (size_t m = 0; m < 10; ++m) {
+  for (size_t i = 0; i < 50; ++i) {
+    k = 500;
+    for (size_t m = 0; m < 1; ++m) {
       ExpLandmarkOptSLAM slam_problem("config/config_sim.yaml", k);
 
       slam_problem.CreateTrajectory();
@@ -864,18 +862,18 @@ int main(int argc, char **argv) {
       double dt = ((double) t.total_nanoseconds() * 1e-9);
 
       std::cout << "The entire time is " << dt << " sec." << std::endl;
-      process_time_vec.push_back(dt);
+//      process_time_vec.push_back(dt);
 
-//    slam_problem.OutputResult("result/sim/vis/boem_" + std::to_string(i) + ".csv");
-      k += 50;
+    slam_problem.OutputResult("result/sim/long_traj/boem_" + std::to_string(i) + ".csv");
+//      k += 50;
     }
-    std::ofstream output_file("result/sim/vis/boem_time_" + std::to_string(i) + ".csv");
-    output_file << "process_time\n";
-    for (size_t i = 0; i < process_time_vec.size(); ++i) {
-      output_file << std::to_string(process_time_vec.at(i)) << std::endl;
-    }
-    output_file.close();
-    process_time_vec.clear();
+//    std::ofstream output_file("result/sim/vis/boem_time_" + std::to_string(i) + ".csv");
+//    output_file << "process_time\n";
+//    for (size_t i = 0; i < process_time_vec.size(); ++i) {
+//      output_file << std::to_string(process_time_vec.at(i)) << std::endl;
+//    }
+//    output_file.close();
+//    process_time_vec.clear();
   }
   return 0;
 }

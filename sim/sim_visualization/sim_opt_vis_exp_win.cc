@@ -343,44 +343,27 @@ class ExpLandmarkOptSLAM {
     return true;
   }
 
-  bool SetupOptProblem() {
-    int state_interval = 50;
-    int state_start_ = 1;
-    int constraint_start = 0;
-    int state_end_ = state_interval;
+  bool SetupOptProblem(int state_start, int constraint_start, int state_end) {
+    if (state_start == 1) {
+      Eigen::Quaterniond q0 = state_vec_.at(0)->q_;
+      Eigen::Vector3d v0 = state_vec_.at(0)->v_;
+      Eigen::Vector3d p0 = state_vec_.at(0)->p_;
 
-    Eigen::Quaterniond q0 = state_vec_.at(0)->q_;
-    Eigen::Vector3d v0 = state_vec_.at(0)->v_;
-    Eigen::Vector3d p0 = state_vec_.at(0)->p_;
+      // the first state
+      StatePara *state_para_ptr = new StatePara(state_vec_.at(0)->timestamp_);
 
-    // the first state
-    StatePara *state_para_ptr = new StatePara(state_vec_.at(0)->timestamp_);
+      state_para_ptr->GetRotationBlock()->setEstimate(q0);
+      state_para_ptr->GetVelocityBlock()->setEstimate(v0);
+      state_para_ptr->GetPositionBlock()->setEstimate(p0);
+      state_para_vec_.push_back(state_para_ptr);
 
-    state_para_ptr->GetRotationBlock()->setEstimate(q0);
-    state_para_ptr->GetVelocityBlock()->setEstimate(v0);
-    state_para_ptr->GetPositionBlock()->setEstimate(p0);
-    state_para_vec_.push_back(state_para_ptr);
+      optimization_problem_.AddParameterBlock(state_para_vec_.at(0)->GetRotationBlock()->parameters(), 4);
+      optimization_problem_.AddParameterBlock(state_para_vec_.at(0)->GetVelocityBlock()->parameters(), 3);
+      optimization_problem_.AddParameterBlock(state_para_vec_.at(0)->GetPositionBlock()->parameters(), 3);
 
-    while(state_end_<=state_len_) {
-
-      // the following states
-      for (size_t i = state_start_; i < state_end_; ++i) {
-
-        Eigen::Vector3d gyr = imu_vec_.at(i-1)->gyr_;
-        Eigen::Vector3d acc = imu_vec_.at(i-1)->acc_;
-
-        p0 = p0 + dt_ * v0 + 0.5 * dt_ * dt_ * (q0.toRotationMatrix() * acc + gravity);
-        v0 = v0 + dt_ * (q0.toRotationMatrix() * acc + gravity);
-        q0 = quat_pos(q0 * Exp_q(dt_ * gyr));
-
-        state_para_ptr = new StatePara(state_vec_.at(i)->timestamp_);
-        state_para_ptr->GetRotationBlock()->setEstimate(q0);
-        state_para_ptr->GetVelocityBlock()->setEstimate(v0);
-        state_para_ptr->GetPositionBlock()->setEstimate(p0);
-
-        state_para_vec_.push_back(state_para_ptr);
-      }
-
+      optimization_problem_.SetParameterBlockConstant(state_para_vec_.at(0)->GetRotationBlock()->parameters());
+      optimization_problem_.SetParameterBlockConstant(state_para_vec_.at(0)->GetVelocityBlock()->parameters());
+      optimization_problem_.SetParameterBlockConstant(state_para_vec_.at(0)->GetPositionBlock()->parameters());
 
       // the following states
       for (size_t i = 0; i < landmark_len_; ++i) {
@@ -389,75 +372,85 @@ class ExpLandmarkOptSLAM {
         landmark_para_vec_.push_back(landmark_ptr);
       }
 
-
-      // add parameter blocks
-      for (size_t i = 0; i < state_end_; ++i) {
-        optimization_problem_.AddParameterBlock(state_para_vec_.at(i)->GetRotationBlock()->parameters(), 4);
-        optimization_problem_.AddParameterBlock(state_para_vec_.at(i)->GetVelocityBlock()->parameters(), 3);
-        optimization_problem_.AddParameterBlock(state_para_vec_.at(i)->GetPositionBlock()->parameters(), 3);
-      }
-
-
-      optimization_problem_.SetParameterBlockConstant(state_para_vec_.at(0)->GetRotationBlock()->parameters());
-      optimization_problem_.SetParameterBlockConstant(state_para_vec_.at(0)->GetVelocityBlock()->parameters());
-      optimization_problem_.SetParameterBlockConstant(state_para_vec_.at(0)->GetPositionBlock()->parameters());
-
-
       for (size_t i = 0; i < landmark_vec_.size(); ++i) {
         optimization_problem_.AddParameterBlock(landmark_para_vec_.at(i)->parameters(), 3);
       }
 
+    }
 
-      // imu constraints
-      for (size_t i = constraint_start; i < state_end_ - 1; ++i) {
+    // the following states
+    for (size_t i = state_start; i < state_end; ++i) {
+      Eigen::Quaterniond q0 = state_para_vec_.at(i-1)->GetRotationBlock()->estimate();
+      Eigen::Vector3d v0 = state_para_vec_.at(i-1)->GetVelocityBlock()->estimate();
+      Eigen::Vector3d p0 = state_para_vec_.at(i-1)->GetPositionBlock()->estimate();
 
-        ceres::CostFunction *cost_function = new ImuError(imu_vec_.at(i)->gyr_,
-                                                          imu_vec_.at(i)->acc_,
-                                                          dt_,
-                                                          Eigen::Vector3d(0, 0, 0),
-                                                          Eigen::Vector3d(0, 0, 0),
-                                                          sigma_g_c_,
-                                                          sigma_a_c_);
+      Eigen::Vector3d gyr = imu_vec_.at(i-1)->gyr_;
+      Eigen::Vector3d acc = imu_vec_.at(i-1)->acc_;
+
+      p0 = p0 + dt_ * v0 + 0.5 * dt_ * dt_ * (q0.toRotationMatrix() * acc + gravity);
+      v0 = v0 + dt_ * (q0.toRotationMatrix() * acc + gravity);
+      q0 = quat_pos(q0 * Exp_q(dt_ * gyr));
+
+      StatePara *state_para_ptr = new StatePara(state_vec_.at(i)->timestamp_);
+      state_para_ptr->GetRotationBlock()->setEstimate(q0);
+      state_para_ptr->GetVelocityBlock()->setEstimate(v0);
+      state_para_ptr->GetPositionBlock()->setEstimate(p0);
+
+      state_para_vec_.push_back(state_para_ptr);
+    }
+
+
+    // add parameter blocks
+    for (size_t i = state_start; i < state_end; ++i) {
+      optimization_problem_.AddParameterBlock(state_para_vec_.at(i)->GetRotationBlock()->parameters(), 4);
+      optimization_problem_.AddParameterBlock(state_para_vec_.at(i)->GetVelocityBlock()->parameters(), 3);
+      optimization_problem_.AddParameterBlock(state_para_vec_.at(i)->GetPositionBlock()->parameters(), 3);
+    }
+
+
+    // imu constraints
+    for (size_t i = constraint_start; i < state_end - 1; ++i) {
+
+      ceres::CostFunction *cost_function = new ImuError(imu_vec_.at(i)->gyr_,
+                                                        imu_vec_.at(i)->acc_,
+                                                        dt_,
+                                                        Eigen::Vector3d(0, 0, 0),
+                                                        Eigen::Vector3d(0, 0, 0),
+                                                        sigma_g_c_,
+                                                        sigma_a_c_);
+
+      optimization_problem_.AddResidualBlock(cost_function,
+                                             NULL,
+                                             state_para_vec_.at(i + 1)->GetRotationBlock()->parameters(),
+                                             state_para_vec_.at(i + 1)->GetVelocityBlock()->parameters(),
+                                             state_para_vec_.at(i + 1)->GetPositionBlock()->parameters(),
+                                             state_para_vec_.at(i)->GetRotationBlock()->parameters(),
+                                             state_para_vec_.at(i)->GetVelocityBlock()->parameters(),
+                                             state_para_vec_.at(i)->GetPositionBlock()->parameters());
+
+    }
+
+
+    // observation constraints
+    for (size_t i = constraint_start; i < state_end; ++i) {
+      for (size_t j = 0; j < observation_vec_.at(i).size(); ++j) {
+
+        size_t landmark_idx = observation_vec_.at(i).at(j)->landmark_id_;
+
+        ceres::CostFunction *cost_function = new ReprojectionError(observation_vec_.at(i).at(j)->feature_pos_,
+                                                                   T_bc_,
+                                                                   fu_, fv_,
+                                                                   cu_, cv_,
+                                                                   observation_vec_.at(i).at(j)->cov());
 
         optimization_problem_.AddResidualBlock(cost_function,
                                                NULL,
-                                               state_para_vec_.at(i + 1)->GetRotationBlock()->parameters(),
-                                               state_para_vec_.at(i + 1)->GetVelocityBlock()->parameters(),
-                                               state_para_vec_.at(i + 1)->GetPositionBlock()->parameters(),
                                                state_para_vec_.at(i)->GetRotationBlock()->parameters(),
-                                               state_para_vec_.at(i)->GetVelocityBlock()->parameters(),
-                                               state_para_vec_.at(i)->GetPositionBlock()->parameters());
-
+                                               state_para_vec_.at(i)->GetPositionBlock()->parameters(),
+                                               landmark_para_vec_.at(landmark_idx)->parameters());
       }
-
-
-      // observation constraints
-      for (size_t i = constraint_start; i < state_end_; ++i) {
-        for (size_t j = 0; j < observation_vec_.at(i).size(); ++j) {
-
-          size_t landmark_idx = observation_vec_.at(i).at(j)->landmark_id_;
-
-          ceres::CostFunction *cost_function = new ReprojectionError(observation_vec_.at(i).at(j)->feature_pos_,
-                                                                     T_bc_,
-                                                                     fu_, fv_,
-                                                                     cu_, cv_,
-                                                                     observation_vec_.at(i).at(j)->cov());
-
-          optimization_problem_.AddResidualBlock(cost_function,
-                                                 NULL,
-                                                 state_para_vec_.at(i)->GetRotationBlock()->parameters(),
-                                                 state_para_vec_.at(i)->GetPositionBlock()->parameters(),
-                                                 landmark_para_vec_.at(landmark_idx)->parameters());
-        }
-      }
-      if(state_start_==1){
-        state_start_+= state_interval-1;
-      }else {
-        state_start_ += state_interval;
-      }
-      state_end_ += state_interval;
-      constraint_start += 0;
     }
+
     return true;
   }
 
@@ -609,53 +602,57 @@ class ExpLandmarkOptSLAM {
 
 };
 
-
-
 int main(int argc, char **argv) {
-  srand((unsigned int) time(NULL)); //eigen uses the random number generator of the standard lib
+//  srand((unsigned int) time(NULL)); //eigen uses the random number generator of the standard lib
   google::InitGoogleLogging(argv[0]);
   std::vector<double>   process_time_vec;
-  int k;
-  for (size_t i = 0; i < 50; ++i) {
-    k = 350;
-    for (size_t m=0; m<1; ++m) {
-      ExpLandmarkOptSLAM slam_problem("config/config_sim.yaml", k);
-      slam_problem.CreateTrajectory();
-      slam_problem.CreateLandmark();
-
-      slam_problem.CreateImuData();
-      slam_problem.CreateObservationData();
-
+  int state_len = 350; // initialize the trajectory length
+  int state_interval = 50; // to create the expanding window
+  int state_start = 1;
+  int constraint_start = 0;
+  int state_end = state_interval;
+  for (size_t i = 0; i < 1; ++i) {
+    ExpLandmarkOptSLAM slam_problem("config/config_sim.yaml", state_len);
+    slam_problem.CreateTrajectory();
+    slam_problem.CreateLandmark();
+    slam_problem.CreateImuData();
+    slam_problem.CreateObservationData();
+    while(state_end<=state_len) {
       boost::posix_time::ptime begin_time = boost::posix_time::microsec_clock::local_time();
-
-      slam_problem.SetupOptProblem();
-
-//    slam_problem.OutputResult("result/sim/vis/dr_"+std::to_string(i)+".csv");
-      slam_problem.SolveOptProblem();
-
+      slam_problem.SetupOptProblem(state_start, constraint_start, state_end);
+//      slam_problem.OutputResult("result/sim/exp_win_w_time/dr_"+std::to_string(i)+".csv");
+//      slam_problem.SolveOptProblem();
       boost::posix_time::ptime end_time = boost::posix_time::microsec_clock::local_time();
       boost::posix_time::time_duration t = end_time - begin_time;
       double dt = ((double) t.total_nanoseconds() * 1e-9);
-
+//      process_time_vec.push_back(dt);
       std::cout << "The entire time is " << dt << " sec." << std::endl;
-      process_time_vec.push_back(dt);
+      if(state_start==1){
+        state_start+= state_interval-1;
+      }else {
+        state_start += state_interval;
+      }
+      state_end += state_interval;
+      constraint_start += 0;
 
-    slam_problem.OutputResult("result/sim/expanding_window/opt_"+std::to_string(i)+".csv");
-//      slam_problem.OutputResult("result/sim/test/opt_test.csv");
+    }
+        slam_problem.SolveOptProblem();
+        slam_problem.OutputResult("result/sim/exp_win_w_time/opt_test.csv");
+
+//      slam_problem.OutputResult("result/sim/exp_win_w_time/opt_"+std::to_string(i)+".csv");
 
 //    slam_problem.OutputLandmarks("result/sim/vis/");
-//    slam_problem.OutputGroundtruth("result/sim/vis/");
-//      k += 50;
-    }
-//    std::ofstream output_file("result/sim/vis/opt_time_"+std::to_string(i)+".csv");
+//    slam_problem.OutputGroundtruth("result/sim/exp_win_w_time/");
+//
+
+//    std::ofstream output_file("result/sim/exp_win_w_time/opt_time_" + std::to_string(i) + ".csv"); // output the time vector
 //    output_file << "process_time\n";
 //    for (size_t i=0; i<process_time_vec.size(); ++i) {
 //      output_file << std::to_string(process_time_vec.at(i)) << std::endl;
 //    }
 //    output_file.close();
-    process_time_vec.clear();
+//    process_time_vec.clear();
   }
-
 
   return 0;
 }

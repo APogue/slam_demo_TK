@@ -14,14 +14,14 @@ plot_color = {
 }
 
 
-fig_width = 11.326
-fig_height = 7.0
+fig_width = 5.84
+fig_height = 4.38
 
 # keyframe has larger time range than ground truth
 
-gt_data = pd.read_csv("result/sim/test/gt.csv")
-est_opt_data = pd.read_csv("result/sim/test/opt.csv")
-est_opt_test = pd.read_csv("result/sim/test/opt_test.csv")
+gt_data = pd.read_csv("result/sim/exp_win_w_time/gt.csv")
+est_opt_data = pd.read_csv("result/sim/exp_win_w_time/opt.csv")
+est_opt_test = pd.read_csv("result/sim/exp_win_w_time/opt_test.csv")
 
 
 

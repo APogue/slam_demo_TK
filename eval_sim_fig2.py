@@ -14,8 +14,13 @@ plot_color = {
 	'lmk': [0.1, 0.1490, 0.3765],
 }
 
+fig_width = 5.84
+fig_height = 4.38
+
+
+
 # error plot
-gt_data = pd.read_csv("result/sim/vis/gt.csv")
+gt_data = pd.read_csv("result/sim/long_traj/gt.csv")
 
 dr_error_p = np.zeros_like(gt_data['p_x'])
 est_opt_error_p = np.zeros_like(gt_data['p_x'])
@@ -49,7 +54,7 @@ for i in range(len(gt_data['p_x'])):
 	est_em_error_list_q = []
 	est_boem_error_list_q = []
 
-	for k in range(0,50):
+	for k in range(0,1):
 		dr_data = pd.read_csv("result/sim/long_traj/dr_%s.csv" %k)
 		est_opt_data = pd.read_csv("result/sim/long_traj/opt_%s.csv" %k)
 		est_em_data = pd.read_csv("result/sim/long_traj/em_%s.csv" %k)
@@ -77,20 +82,24 @@ for i in range(len(gt_data['p_x'])):
 	est_boem_error_q[i] = math.sqrt(sum(est_boem_error_list_q)/len(est_boem_error_list_q))
 
 fig, (ax1, ax2) = plt.subplots(2)
-line_width = 1.5
-ax1.plot(gt_data['timestamp'], dr_error_p, color = plot_color['dr'], linewidth=line_width, label='dr')
-ax1.plot(gt_data['timestamp'], est_opt_error_p, color = plot_color['opt'], linewidth=line_width, label='opt.')
-ax1.plot(gt_data['timestamp'], est_em_error_p, color = plot_color['em'], linewidth=line_width, label='EM')
-ax1.plot(gt_data['timestamp'], est_boem_error_p, color = plot_color['boem'], linewidth=line_width, label='BOEM')
+fig.set_size_inches(fig_width, fig_height)
+line_width = 1.2
+ax1.plot(gt_data['timestamp'], dr_error_q, color = plot_color['dr'], linewidth=line_width, label='dead reckoning')
+ax1.plot(gt_data['timestamp'], est_opt_error_q, color = plot_color['opt'], linewidth=line_width, label='opt.')
+ax1.plot(gt_data['timestamp'], est_em_error_q, color = plot_color['em'], linewidth=line_width, label='EM')
+ax1.plot(gt_data['timestamp'], est_boem_error_q, color = plot_color['boem'], linewidth=line_width, label='BOEM')
+ax1.set(ylabel='rotation RMSE [deg]')
+ax1.set_ylim(-0.2, 11.1)
+ax1.legend(loc = 1)
 
-ax1.set(ylabel='RMSE [m]')
-ax2.plot(gt_data['timestamp'], dr_error_q, color = plot_color['dr'], linewidth=line_width, label='dr')
-ax2.plot(gt_data['timestamp'], est_opt_error_q, color = plot_color['opt'], linewidth=line_width, label='opt.')
-ax2.plot(gt_data['timestamp'], est_em_error_q, color = plot_color['em'], linewidth=line_width, label='EM')
-ax2.plot(gt_data['timestamp'], est_boem_error_q, color = plot_color['boem'], linewidth=line_width, label='BOEM')
-ax2.set(ylabel='RMSE [deg]')
+
+ax2.plot(gt_data['timestamp'], dr_error_p, color = plot_color['dr'], linewidth=line_width, label='dr')
+ax2.plot(gt_data['timestamp'], est_opt_error_p, color = plot_color['opt'], linewidth=line_width, label='opt.')
+ax2.plot(gt_data['timestamp'], est_em_error_p, color = plot_color['em'], linewidth=line_width, label='EM')
+ax2.plot(gt_data['timestamp'], est_boem_error_p, color = plot_color['boem'], linewidth=line_width, label='BOEM')
+ax2.set(ylabel='position RMSE [m]')
 ax2.set(xlabel='time [s]')
-ax2.legend()
+ax2.set_ylim(-0.01, 0.7)
 plt.show()
 
 

@@ -18,6 +18,7 @@ imu_param:
   sigma_g_c: 1.0e-4 # gyro noise density [rad/s/sqrt(Hz)]
   sigma_a_c: 1.0e-3 # accelerometer noise density [m/s^2/sqrt(Hz)]
 
+
 landmark_generation:
   box_xy: 2.0 # box offset from the circle
   box_z: 1 # box offset from uav height

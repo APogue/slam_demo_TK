@@ -603,7 +603,7 @@ class ExpLandmarkOptSLAM {
 
 
 int main(int argc, char **argv) {
-  srand((unsigned int) time(NULL)); //eigen uses the random number generator of the standard lib
+//  srand((unsigned int) time(NULL)); //eigen uses the random number generator of the standard lib
   google::InitGoogleLogging(argv[0]);
   std::vector<double>   process_time_vec;
   int k;
@@ -621,7 +621,9 @@ int main(int argc, char **argv) {
 
       slam_problem.SetupOptProblem();
 
-//    slam_problem.OutputResult("result/sim/vis/dr_"+std::to_string(i)+".csv");
+//      slam_problem.OutputResult("result/sim/long_traj/dr_"+std::to_string(i)+".csv");
+      slam_problem.OutputResult("result/sim/exp_win_w_time/dr.csv");
+
       slam_problem.SolveOptProblem();
 
       boost::posix_time::ptime end_time = boost::posix_time::microsec_clock::local_time();
@@ -631,12 +633,12 @@ int main(int argc, char **argv) {
       std::cout << "The entire time is " << dt << " sec." << std::endl;
       process_time_vec.push_back(dt);
 
-//    slam_problem.OutputResult("result/sim/vis/opt_"+std::to_string(i)+".csv");
-    slam_problem.OutputResult("result/sim/test/opt.csv");
+//      slam_problem.OutputResult("result/sim/long_traj/opt_"+std::to_string(i)+".csv");
+      slam_problem.OutputResult("result/sim/exp_win_w_time/opt.csv");
 
 //    slam_problem.OutputLandmarks("result/sim/vis/");
 //    slam_problem.OutputGroundtruth("result/sim/vis/");
-    slam_problem.OutputGroundtruth("result/sim/test/");
+//    slam_problem.OutputGroundtruth("result/sim/long_traj/");
 
 //      k += 50;
     }
@@ -646,7 +648,7 @@ int main(int argc, char **argv) {
 //      output_file << std::to_string(process_time_vec.at(i)) << std::endl;
 //    }
 //    output_file.close();
-    process_time_vec.clear();
+//    process_time_vec.clear();
   }
 
 
