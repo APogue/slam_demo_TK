@@ -343,7 +343,7 @@ class ExpLandmarkOptSLAM {
     return true;
   }
 
-  bool SetupOptProblem(int state_len, int state_interval) {
+  bool SolveOptProblem(int state_len, int state_interval, int mc) {
     int state_end = state_interval;
     Eigen::Quaterniond q0 = state_vec_.at(0)->q_;
     Eigen::Vector3d v0 = state_vec_.at(0)->v_;
@@ -383,6 +383,7 @@ class ExpLandmarkOptSLAM {
     }
 
     while(state_end<=state_len) {
+      boost::posix_time::ptime begin_time = boost::posix_time::microsec_clock::local_time();
       ceres::Problem optimization_problem_;
       // add parameter blocks
       for (size_t i=0; i<state_end; ++i) {
@@ -446,26 +447,49 @@ class ExpLandmarkOptSLAM {
         }
       }
 
-      if(state_end==state_len) {
-         ceres::Solver::Options optimization_options_;
-         ceres::Solver::Summary optimization_summary_;
-         optimization_options_.linear_solver_type = ceres::SPARSE_SCHUR;
-         optimization_options_.minimizer_progress_to_stdout = true;
-         optimization_options_.num_threads = 6;
-         optimization_options_.function_tolerance = 1e-20;
-         optimization_options_.parameter_tolerance = 1e-25;
-         optimization_options_.max_num_iterations = 100;
-         ceres::Solve(optimization_options_, &optimization_problem_, &optimization_summary_);
-         std::cout << optimization_summary_.FullReport() << "\n";
+//      if(state_end==state_len) {
+      ceres::Solver::Options optimization_options_;
+      ceres::Solver::Summary optimization_summary_;
+      optimization_options_.linear_solver_type = ceres::SPARSE_SCHUR;
+      optimization_options_.minimizer_progress_to_stdout = true;
+      optimization_options_.num_threads = 6;
+      optimization_options_.function_tolerance = 1e-20;
+      optimization_options_.parameter_tolerance = 1e-25;
+      optimization_options_.max_num_iterations = 100;
+      ceres::Solve(optimization_options_, &optimization_problem_, &optimization_summary_);
+      std::cout << optimization_summary_.FullReport() << "\n";
+
+      // optimization setup and solution time
+      boost::posix_time::ptime end_time = boost::posix_time::microsec_clock::local_time();
+      boost::posix_time::time_duration t = end_time - begin_time;
+      double dt = ((double) t.total_nanoseconds() * 1e-9);
+
+      std::cout << "The entire time is " << dt << " sec." << std::endl;
+      process_time_vec_.push_back(dt);
+      //      }
+
+      OutputResult("result/sim/exp_win_w_time/opt_"+ std::to_string(mc)+"_"+
+      std::to_string(state_end)+".csv");
+      if(mc == 0){
+        OutputGroundtruth("result/sim/exp_win_w_time/gt_" + std::to_string(state_end)+".csv");
       }
       state_end += state_interval;
     }
+
+    std::ofstream output_file("result/sim/exp_win_w_time/opt_time_"+std::to_string(mc)+".csv");
+    output_file << "process_time\n";
+    for (size_t i=0; i<process_time_vec_.size(); ++i) {
+      output_file << std::to_string(process_time_vec_.at(i)) << std::endl;
+    }
+    output_file.close();
+
+
     return true;
   }
 
 
-  bool OutputGroundtruth(std::string output_folder_name) {
-    std::ofstream traj_output_file(output_folder_name + "gt.csv");
+  void OutputGroundtruth(const std::string& output_file_name) {
+    std::ofstream traj_output_file(output_file_name);
 
     traj_output_file << "timestamp,p_x,p_y,p_z,v_x,v_y,v_z,q_w,q_x,q_y,q_z\n";
 
@@ -485,12 +509,9 @@ class ExpLandmarkOptSLAM {
 
     traj_output_file.close();
 
-    return true;
-
-
   }
 
-    bool OutputLandmarks(std::string output_folder_name) {
+    bool OutputLandmarks(const std::string& output_folder_name) {
       std::ofstream traj_output_file(output_folder_name + "lmk.csv");
 
       traj_output_file << "p_x,p_y,p_z\n";
@@ -508,7 +529,7 @@ class ExpLandmarkOptSLAM {
 
     }
 
-  bool OutputResult(std::string output_file_name) {
+  void OutputResult(const std::string& output_file_name) {
 
     std::ofstream output_file(output_file_name);
 
@@ -531,7 +552,6 @@ class ExpLandmarkOptSLAM {
 
     output_file.close();
 
-    return true;
   }
 
 private:
@@ -576,7 +596,7 @@ private:
   // ground truth containers
   std::vector<State*>                         state_vec_;
   std::vector<Eigen::Vector3d>                landmark_vec_;
-  std::vector<Eigen::Vector3d>                process_time_vec_;
+  std::vector<double>                         process_time_vec_;
 
   // parameter containers
   std::vector<StatePara*>                     state_para_vec_;
@@ -593,19 +613,20 @@ private:
 
 
 int main(int argc, char **argv) {
-//  srand((unsigned int) time(NULL)); //eigen uses the random number generator of the standard lib
+  srand((unsigned int) time(NULL)); //eigen uses the random number generator of the standard lib
   google::InitGoogleLogging(argv[0]);
+  std::vector<double>   process_time_vec;
+  int mc = 0; // initialize monte carlo count
+  int state_len = 600; // initialize the trajectory length
+  int state_interval = 75; // to create the expanding window
+  for (size_t i = 0; i < 1; ++i) { // this loop is for the monte carlo
 
-  int state_len = 350; // initialize the trajectory length
-  int state_interval = 70; // to create the expanding window
-
-  ExpLandmarkOptSLAM slam_problem("config/config_sim.yaml", state_len);
-  slam_problem.CreateTrajectory();
-  slam_problem.CreateLandmark();
-  slam_problem.CreateImuData();
-  slam_problem.CreateObservationData();
-  slam_problem.SetupOptProblem(state_len, state_interval);
-  slam_problem.OutputResult("result/sim/exp_win_w_time/opt_test.csv");
-
+    ExpLandmarkOptSLAM slam_problem("config/config_sim.yaml", state_len);
+    slam_problem.CreateTrajectory();
+    slam_problem.CreateLandmark();
+    slam_problem.CreateImuData();
+    slam_problem.CreateObservationData();
+    slam_problem.SolveOptProblem(state_len, state_interval, mc);
+  }
   return 0;
 }

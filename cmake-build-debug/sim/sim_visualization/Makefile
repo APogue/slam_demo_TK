@@ -131,34 +131,34 @@ depend:
 .PHONY : depend
 
 # Convenience name for target.
-sim/sim_visualization/CMakeFiles/sim_opt_exp_win_v3.dir/rule:
-	cd /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 sim/sim_visualization/CMakeFiles/sim_opt_exp_win_v3.dir/rule
-.PHONY : sim/sim_visualization/CMakeFiles/sim_opt_exp_win_v3.dir/rule
+sim/sim_visualization/CMakeFiles/sim_opt_exp_win.dir/rule:
+	cd /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 sim/sim_visualization/CMakeFiles/sim_opt_exp_win.dir/rule
+.PHONY : sim/sim_visualization/CMakeFiles/sim_opt_exp_win.dir/rule
 
 # Convenience name for target.
-sim_opt_exp_win_v3: sim/sim_visualization/CMakeFiles/sim_opt_exp_win_v3.dir/rule
+sim_opt_exp_win: sim/sim_visualization/CMakeFiles/sim_opt_exp_win.dir/rule
 
-.PHONY : sim_opt_exp_win_v3
+.PHONY : sim_opt_exp_win
 
 # fast build rule for target.
-sim_opt_exp_win_v3/fast:
-	cd /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug && $(MAKE) $(MAKESILENT) -f sim/sim_visualization/CMakeFiles/sim_opt_exp_win_v3.dir/build.make sim/sim_visualization/CMakeFiles/sim_opt_exp_win_v3.dir/build
-.PHONY : sim_opt_exp_win_v3/fast
+sim_opt_exp_win/fast:
+	cd /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug && $(MAKE) $(MAKESILENT) -f sim/sim_visualization/CMakeFiles/sim_opt_exp_win.dir/build.make sim/sim_visualization/CMakeFiles/sim_opt_exp_win.dir/build
+.PHONY : sim_opt_exp_win/fast
 
 # Convenience name for target.
-sim/sim_visualization/CMakeFiles/sim_opt_exp_win_v2.dir/rule:
-	cd /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 sim/sim_visualization/CMakeFiles/sim_opt_exp_win_v2.dir/rule
-.PHONY : sim/sim_visualization/CMakeFiles/sim_opt_exp_win_v2.dir/rule
+sim/sim_visualization/CMakeFiles/sim_boem_exp_win.dir/rule:
+	cd /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 sim/sim_visualization/CMakeFiles/sim_boem_exp_win.dir/rule
+.PHONY : sim/sim_visualization/CMakeFiles/sim_boem_exp_win.dir/rule
 
 # Convenience name for target.
-sim_opt_exp_win_v2: sim/sim_visualization/CMakeFiles/sim_opt_exp_win_v2.dir/rule
+sim_boem_exp_win: sim/sim_visualization/CMakeFiles/sim_boem_exp_win.dir/rule
 
-.PHONY : sim_opt_exp_win_v2
+.PHONY : sim_boem_exp_win
 
 # fast build rule for target.
-sim_opt_exp_win_v2/fast:
-	cd /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug && $(MAKE) $(MAKESILENT) -f sim/sim_visualization/CMakeFiles/sim_opt_exp_win_v2.dir/build.make sim/sim_visualization/CMakeFiles/sim_opt_exp_win_v2.dir/build
-.PHONY : sim_opt_exp_win_v2/fast
+sim_boem_exp_win/fast:
+	cd /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug && $(MAKE) $(MAKESILENT) -f sim/sim_visualization/CMakeFiles/sim_boem_exp_win.dir/build.make sim/sim_visualization/CMakeFiles/sim_boem_exp_win.dir/build
+.PHONY : sim_boem_exp_win/fast
 
 # Convenience name for target.
 sim/sim_visualization/CMakeFiles/sim_opt_vis.dir/rule:
@@ -174,21 +174,6 @@ sim_opt_vis: sim/sim_visualization/CMakeFiles/sim_opt_vis.dir/rule
 sim_opt_vis/fast:
 	cd /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug && $(MAKE) $(MAKESILENT) -f sim/sim_visualization/CMakeFiles/sim_opt_vis.dir/build.make sim/sim_visualization/CMakeFiles/sim_opt_vis.dir/build
 .PHONY : sim_opt_vis/fast
-
-# Convenience name for target.
-sim/sim_visualization/CMakeFiles/sim_boem_vis_exp_win.dir/rule:
-	cd /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 sim/sim_visualization/CMakeFiles/sim_boem_vis_exp_win.dir/rule
-.PHONY : sim/sim_visualization/CMakeFiles/sim_boem_vis_exp_win.dir/rule
-
-# Convenience name for target.
-sim_boem_vis_exp_win: sim/sim_visualization/CMakeFiles/sim_boem_vis_exp_win.dir/rule
-
-.PHONY : sim_boem_vis_exp_win
-
-# fast build rule for target.
-sim_boem_vis_exp_win/fast:
-	cd /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug && $(MAKE) $(MAKESILENT) -f sim/sim_visualization/CMakeFiles/sim_boem_vis_exp_win.dir/build.make sim/sim_visualization/CMakeFiles/sim_boem_vis_exp_win.dir/build
-.PHONY : sim_boem_vis_exp_win/fast
 
 # Convenience name for target.
 sim/sim_visualization/CMakeFiles/sim_em_vis.dir/rule:
@@ -221,34 +206,46 @@ sim_boem_vis/fast:
 .PHONY : sim_boem_vis/fast
 
 # Convenience name for target.
-sim/sim_visualization/CMakeFiles/sim_em_vis_exp_win.dir/rule:
-	cd /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 sim/sim_visualization/CMakeFiles/sim_em_vis_exp_win.dir/rule
-.PHONY : sim/sim_visualization/CMakeFiles/sim_em_vis_exp_win.dir/rule
+sim/sim_visualization/CMakeFiles/sim_em_exp_win.dir/rule:
+	cd /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 sim/sim_visualization/CMakeFiles/sim_em_exp_win.dir/rule
+.PHONY : sim/sim_visualization/CMakeFiles/sim_em_exp_win.dir/rule
 
 # Convenience name for target.
-sim_em_vis_exp_win: sim/sim_visualization/CMakeFiles/sim_em_vis_exp_win.dir/rule
+sim_em_exp_win: sim/sim_visualization/CMakeFiles/sim_em_exp_win.dir/rule
 
-.PHONY : sim_em_vis_exp_win
+.PHONY : sim_em_exp_win
 
 # fast build rule for target.
-sim_em_vis_exp_win/fast:
-	cd /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug && $(MAKE) $(MAKESILENT) -f sim/sim_visualization/CMakeFiles/sim_em_vis_exp_win.dir/build.make sim/sim_visualization/CMakeFiles/sim_em_vis_exp_win.dir/build
-.PHONY : sim_em_vis_exp_win/fast
+sim_em_exp_win/fast:
+	cd /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug && $(MAKE) $(MAKESILENT) -f sim/sim_visualization/CMakeFiles/sim_em_exp_win.dir/build.make sim/sim_visualization/CMakeFiles/sim_em_exp_win.dir/build
+.PHONY : sim_em_exp_win/fast
 
-# Convenience name for target.
-sim/sim_visualization/CMakeFiles/sim_opt_vis_exp_win.dir/rule:
-	cd /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 sim/sim_visualization/CMakeFiles/sim_opt_vis_exp_win.dir/rule
-.PHONY : sim/sim_visualization/CMakeFiles/sim_opt_vis_exp_win.dir/rule
+sim_boem_exp_win.o: sim_boem_exp_win.cc.o
 
-# Convenience name for target.
-sim_opt_vis_exp_win: sim/sim_visualization/CMakeFiles/sim_opt_vis_exp_win.dir/rule
+.PHONY : sim_boem_exp_win.o
 
-.PHONY : sim_opt_vis_exp_win
+# target to build an object file
+sim_boem_exp_win.cc.o:
+	cd /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug && $(MAKE) $(MAKESILENT) -f sim/sim_visualization/CMakeFiles/sim_boem_exp_win.dir/build.make sim/sim_visualization/CMakeFiles/sim_boem_exp_win.dir/sim_boem_exp_win.cc.o
+.PHONY : sim_boem_exp_win.cc.o
 
-# fast build rule for target.
-sim_opt_vis_exp_win/fast:
-	cd /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug && $(MAKE) $(MAKESILENT) -f sim/sim_visualization/CMakeFiles/sim_opt_vis_exp_win.dir/build.make sim/sim_visualization/CMakeFiles/sim_opt_vis_exp_win.dir/build
-.PHONY : sim_opt_vis_exp_win/fast
+sim_boem_exp_win.i: sim_boem_exp_win.cc.i
+
+.PHONY : sim_boem_exp_win.i
+
+# target to preprocess a source file
+sim_boem_exp_win.cc.i:
+	cd /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug && $(MAKE) $(MAKESILENT) -f sim/sim_visualization/CMakeFiles/sim_boem_exp_win.dir/build.make sim/sim_visualization/CMakeFiles/sim_boem_exp_win.dir/sim_boem_exp_win.cc.i
+.PHONY : sim_boem_exp_win.cc.i
+
+sim_boem_exp_win.s: sim_boem_exp_win.cc.s
+
+.PHONY : sim_boem_exp_win.s
+
+# target to generate assembly for a file
+sim_boem_exp_win.cc.s:
+	cd /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug && $(MAKE) $(MAKESILENT) -f sim/sim_visualization/CMakeFiles/sim_boem_exp_win.dir/build.make sim/sim_visualization/CMakeFiles/sim_boem_exp_win.dir/sim_boem_exp_win.cc.s
+.PHONY : sim_boem_exp_win.cc.s
 
 sim_boem_vis.o: sim_boem_vis.cc.o
 
@@ -277,32 +274,32 @@ sim_boem_vis.cc.s:
 	cd /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug && $(MAKE) $(MAKESILENT) -f sim/sim_visualization/CMakeFiles/sim_boem_vis.dir/build.make sim/sim_visualization/CMakeFiles/sim_boem_vis.dir/sim_boem_vis.cc.s
 .PHONY : sim_boem_vis.cc.s
 
-sim_boem_vis_exp_win.o: sim_boem_vis_exp_win.cc.o
+sim_em_exp_win.o: sim_em_exp_win.cc.o
 
-.PHONY : sim_boem_vis_exp_win.o
+.PHONY : sim_em_exp_win.o
 
 # target to build an object file
-sim_boem_vis_exp_win.cc.o:
-	cd /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug && $(MAKE) $(MAKESILENT) -f sim/sim_visualization/CMakeFiles/sim_boem_vis_exp_win.dir/build.make sim/sim_visualization/CMakeFiles/sim_boem_vis_exp_win.dir/sim_boem_vis_exp_win.cc.o
-.PHONY : sim_boem_vis_exp_win.cc.o
+sim_em_exp_win.cc.o:
+	cd /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug && $(MAKE) $(MAKESILENT) -f sim/sim_visualization/CMakeFiles/sim_em_exp_win.dir/build.make sim/sim_visualization/CMakeFiles/sim_em_exp_win.dir/sim_em_exp_win.cc.o
+.PHONY : sim_em_exp_win.cc.o
 
-sim_boem_vis_exp_win.i: sim_boem_vis_exp_win.cc.i
+sim_em_exp_win.i: sim_em_exp_win.cc.i
 
-.PHONY : sim_boem_vis_exp_win.i
+.PHONY : sim_em_exp_win.i
 
 # target to preprocess a source file
-sim_boem_vis_exp_win.cc.i:
-	cd /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug && $(MAKE) $(MAKESILENT) -f sim/sim_visualization/CMakeFiles/sim_boem_vis_exp_win.dir/build.make sim/sim_visualization/CMakeFiles/sim_boem_vis_exp_win.dir/sim_boem_vis_exp_win.cc.i
-.PHONY : sim_boem_vis_exp_win.cc.i
+sim_em_exp_win.cc.i:
+	cd /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug && $(MAKE) $(MAKESILENT) -f sim/sim_visualization/CMakeFiles/sim_em_exp_win.dir/build.make sim/sim_visualization/CMakeFiles/sim_em_exp_win.dir/sim_em_exp_win.cc.i
+.PHONY : sim_em_exp_win.cc.i
 
-sim_boem_vis_exp_win.s: sim_boem_vis_exp_win.cc.s
+sim_em_exp_win.s: sim_em_exp_win.cc.s
 
-.PHONY : sim_boem_vis_exp_win.s
+.PHONY : sim_em_exp_win.s
 
 # target to generate assembly for a file
-sim_boem_vis_exp_win.cc.s:
-	cd /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug && $(MAKE) $(MAKESILENT) -f sim/sim_visualization/CMakeFiles/sim_boem_vis_exp_win.dir/build.make sim/sim_visualization/CMakeFiles/sim_boem_vis_exp_win.dir/sim_boem_vis_exp_win.cc.s
-.PHONY : sim_boem_vis_exp_win.cc.s
+sim_em_exp_win.cc.s:
+	cd /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug && $(MAKE) $(MAKESILENT) -f sim/sim_visualization/CMakeFiles/sim_em_exp_win.dir/build.make sim/sim_visualization/CMakeFiles/sim_em_exp_win.dir/sim_em_exp_win.cc.s
+.PHONY : sim_em_exp_win.cc.s
 
 sim_em_vis.o: sim_em_vis.cc.o
 
@@ -331,86 +328,32 @@ sim_em_vis.cc.s:
 	cd /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug && $(MAKE) $(MAKESILENT) -f sim/sim_visualization/CMakeFiles/sim_em_vis.dir/build.make sim/sim_visualization/CMakeFiles/sim_em_vis.dir/sim_em_vis.cc.s
 .PHONY : sim_em_vis.cc.s
 
-sim_em_vis_exp_win.o: sim_em_vis_exp_win.cc.o
+sim_opt_exp_win.o: sim_opt_exp_win.cc.o
 
-.PHONY : sim_em_vis_exp_win.o
-
-# target to build an object file
-sim_em_vis_exp_win.cc.o:
-	cd /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug && $(MAKE) $(MAKESILENT) -f sim/sim_visualization/CMakeFiles/sim_em_vis_exp_win.dir/build.make sim/sim_visualization/CMakeFiles/sim_em_vis_exp_win.dir/sim_em_vis_exp_win.cc.o
-.PHONY : sim_em_vis_exp_win.cc.o
-
-sim_em_vis_exp_win.i: sim_em_vis_exp_win.cc.i
-
-.PHONY : sim_em_vis_exp_win.i
-
-# target to preprocess a source file
-sim_em_vis_exp_win.cc.i:
-	cd /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug && $(MAKE) $(MAKESILENT) -f sim/sim_visualization/CMakeFiles/sim_em_vis_exp_win.dir/build.make sim/sim_visualization/CMakeFiles/sim_em_vis_exp_win.dir/sim_em_vis_exp_win.cc.i
-.PHONY : sim_em_vis_exp_win.cc.i
-
-sim_em_vis_exp_win.s: sim_em_vis_exp_win.cc.s
-
-.PHONY : sim_em_vis_exp_win.s
-
-# target to generate assembly for a file
-sim_em_vis_exp_win.cc.s:
-	cd /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug && $(MAKE) $(MAKESILENT) -f sim/sim_visualization/CMakeFiles/sim_em_vis_exp_win.dir/build.make sim/sim_visualization/CMakeFiles/sim_em_vis_exp_win.dir/sim_em_vis_exp_win.cc.s
-.PHONY : sim_em_vis_exp_win.cc.s
-
-sim_opt_exp_win_v2.o: sim_opt_exp_win_v2.cc.o
-
-.PHONY : sim_opt_exp_win_v2.o
+.PHONY : sim_opt_exp_win.o
 
 # target to build an object file
-sim_opt_exp_win_v2.cc.o:
-	cd /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug && $(MAKE) $(MAKESILENT) -f sim/sim_visualization/CMakeFiles/sim_opt_exp_win_v2.dir/build.make sim/sim_visualization/CMakeFiles/sim_opt_exp_win_v2.dir/sim_opt_exp_win_v2.cc.o
-.PHONY : sim_opt_exp_win_v2.cc.o
+sim_opt_exp_win.cc.o:
+	cd /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug && $(MAKE) $(MAKESILENT) -f sim/sim_visualization/CMakeFiles/sim_opt_exp_win.dir/build.make sim/sim_visualization/CMakeFiles/sim_opt_exp_win.dir/sim_opt_exp_win.cc.o
+.PHONY : sim_opt_exp_win.cc.o
 
-sim_opt_exp_win_v2.i: sim_opt_exp_win_v2.cc.i
+sim_opt_exp_win.i: sim_opt_exp_win.cc.i
 
-.PHONY : sim_opt_exp_win_v2.i
-
-# target to preprocess a source file
-sim_opt_exp_win_v2.cc.i:
-	cd /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug && $(MAKE) $(MAKESILENT) -f sim/sim_visualization/CMakeFiles/sim_opt_exp_win_v2.dir/build.make sim/sim_visualization/CMakeFiles/sim_opt_exp_win_v2.dir/sim_opt_exp_win_v2.cc.i
-.PHONY : sim_opt_exp_win_v2.cc.i
-
-sim_opt_exp_win_v2.s: sim_opt_exp_win_v2.cc.s
-
-.PHONY : sim_opt_exp_win_v2.s
-
-# target to generate assembly for a file
-sim_opt_exp_win_v2.cc.s:
-	cd /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug && $(MAKE) $(MAKESILENT) -f sim/sim_visualization/CMakeFiles/sim_opt_exp_win_v2.dir/build.make sim/sim_visualization/CMakeFiles/sim_opt_exp_win_v2.dir/sim_opt_exp_win_v2.cc.s
-.PHONY : sim_opt_exp_win_v2.cc.s
-
-sim_opt_exp_win_v3.o: sim_opt_exp_win_v3.cc.o
-
-.PHONY : sim_opt_exp_win_v3.o
-
-# target to build an object file
-sim_opt_exp_win_v3.cc.o:
-	cd /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug && $(MAKE) $(MAKESILENT) -f sim/sim_visualization/CMakeFiles/sim_opt_exp_win_v3.dir/build.make sim/sim_visualization/CMakeFiles/sim_opt_exp_win_v3.dir/sim_opt_exp_win_v3.cc.o
-.PHONY : sim_opt_exp_win_v3.cc.o
-
-sim_opt_exp_win_v3.i: sim_opt_exp_win_v3.cc.i
-
-.PHONY : sim_opt_exp_win_v3.i
+.PHONY : sim_opt_exp_win.i
 
 # target to preprocess a source file
-sim_opt_exp_win_v3.cc.i:
-	cd /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug && $(MAKE) $(MAKESILENT) -f sim/sim_visualization/CMakeFiles/sim_opt_exp_win_v3.dir/build.make sim/sim_visualization/CMakeFiles/sim_opt_exp_win_v3.dir/sim_opt_exp_win_v3.cc.i
-.PHONY : sim_opt_exp_win_v3.cc.i
+sim_opt_exp_win.cc.i:
+	cd /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug && $(MAKE) $(MAKESILENT) -f sim/sim_visualization/CMakeFiles/sim_opt_exp_win.dir/build.make sim/sim_visualization/CMakeFiles/sim_opt_exp_win.dir/sim_opt_exp_win.cc.i
+.PHONY : sim_opt_exp_win.cc.i
 
-sim_opt_exp_win_v3.s: sim_opt_exp_win_v3.cc.s
+sim_opt_exp_win.s: sim_opt_exp_win.cc.s
 
-.PHONY : sim_opt_exp_win_v3.s
+.PHONY : sim_opt_exp_win.s
 
 # target to generate assembly for a file
-sim_opt_exp_win_v3.cc.s:
-	cd /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug && $(MAKE) $(MAKESILENT) -f sim/sim_visualization/CMakeFiles/sim_opt_exp_win_v3.dir/build.make sim/sim_visualization/CMakeFiles/sim_opt_exp_win_v3.dir/sim_opt_exp_win_v3.cc.s
-.PHONY : sim_opt_exp_win_v3.cc.s
+sim_opt_exp_win.cc.s:
+	cd /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug && $(MAKE) $(MAKESILENT) -f sim/sim_visualization/CMakeFiles/sim_opt_exp_win.dir/build.make sim/sim_visualization/CMakeFiles/sim_opt_exp_win.dir/sim_opt_exp_win.cc.s
+.PHONY : sim_opt_exp_win.cc.s
 
 sim_opt_vis.o: sim_opt_vis.cc.o
 
@@ -439,33 +382,6 @@ sim_opt_vis.cc.s:
 	cd /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug && $(MAKE) $(MAKESILENT) -f sim/sim_visualization/CMakeFiles/sim_opt_vis.dir/build.make sim/sim_visualization/CMakeFiles/sim_opt_vis.dir/sim_opt_vis.cc.s
 .PHONY : sim_opt_vis.cc.s
 
-sim_opt_vis_exp_win.o: sim_opt_vis_exp_win.cc.o
-
-.PHONY : sim_opt_vis_exp_win.o
-
-# target to build an object file
-sim_opt_vis_exp_win.cc.o:
-	cd /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug && $(MAKE) $(MAKESILENT) -f sim/sim_visualization/CMakeFiles/sim_opt_vis_exp_win.dir/build.make sim/sim_visualization/CMakeFiles/sim_opt_vis_exp_win.dir/sim_opt_vis_exp_win.cc.o
-.PHONY : sim_opt_vis_exp_win.cc.o
-
-sim_opt_vis_exp_win.i: sim_opt_vis_exp_win.cc.i
-
-.PHONY : sim_opt_vis_exp_win.i
-
-# target to preprocess a source file
-sim_opt_vis_exp_win.cc.i:
-	cd /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug && $(MAKE) $(MAKESILENT) -f sim/sim_visualization/CMakeFiles/sim_opt_vis_exp_win.dir/build.make sim/sim_visualization/CMakeFiles/sim_opt_vis_exp_win.dir/sim_opt_vis_exp_win.cc.i
-.PHONY : sim_opt_vis_exp_win.cc.i
-
-sim_opt_vis_exp_win.s: sim_opt_vis_exp_win.cc.s
-
-.PHONY : sim_opt_vis_exp_win.s
-
-# target to generate assembly for a file
-sim_opt_vis_exp_win.cc.s:
-	cd /home/alexie/Documents/slam_demo_TK/slam_demo/cmake-build-debug && $(MAKE) $(MAKESILENT) -f sim/sim_visualization/CMakeFiles/sim_opt_vis_exp_win.dir/build.make sim/sim_visualization/CMakeFiles/sim_opt_vis_exp_win.dir/sim_opt_vis_exp_win.cc.s
-.PHONY : sim_opt_vis_exp_win.cc.s
-
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -474,38 +390,30 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
+	@echo "... sim_boem_exp_win"
 	@echo "... sim_boem_vis"
-	@echo "... sim_boem_vis_exp_win"
+	@echo "... sim_em_exp_win"
 	@echo "... sim_em_vis"
-	@echo "... sim_em_vis_exp_win"
-	@echo "... sim_opt_exp_win_v2"
-	@echo "... sim_opt_exp_win_v3"
+	@echo "... sim_opt_exp_win"
 	@echo "... sim_opt_vis"
-	@echo "... sim_opt_vis_exp_win"
+	@echo "... sim_boem_exp_win.o"
+	@echo "... sim_boem_exp_win.i"
+	@echo "... sim_boem_exp_win.s"
 	@echo "... sim_boem_vis.o"
 	@echo "... sim_boem_vis.i"
 	@echo "... sim_boem_vis.s"
-	@echo "... sim_boem_vis_exp_win.o"
-	@echo "... sim_boem_vis_exp_win.i"
-	@echo "... sim_boem_vis_exp_win.s"
+	@echo "... sim_em_exp_win.o"
+	@echo "... sim_em_exp_win.i"
+	@echo "... sim_em_exp_win.s"
 	@echo "... sim_em_vis.o"
 	@echo "... sim_em_vis.i"
 	@echo "... sim_em_vis.s"
-	@echo "... sim_em_vis_exp_win.o"
-	@echo "... sim_em_vis_exp_win.i"
-	@echo "... sim_em_vis_exp_win.s"
-	@echo "... sim_opt_exp_win_v2.o"
-	@echo "... sim_opt_exp_win_v2.i"
-	@echo "... sim_opt_exp_win_v2.s"
-	@echo "... sim_opt_exp_win_v3.o"
-	@echo "... sim_opt_exp_win_v3.i"
-	@echo "... sim_opt_exp_win_v3.s"
+	@echo "... sim_opt_exp_win.o"
+	@echo "... sim_opt_exp_win.i"
+	@echo "... sim_opt_exp_win.s"
 	@echo "... sim_opt_vis.o"
 	@echo "... sim_opt_vis.i"
 	@echo "... sim_opt_vis.s"
-	@echo "... sim_opt_vis_exp_win.o"
-	@echo "... sim_opt_vis_exp_win.i"
-	@echo "... sim_opt_vis_exp_win.s"
 .PHONY : help
 
 
