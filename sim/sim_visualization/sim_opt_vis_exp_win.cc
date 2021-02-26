@@ -633,7 +633,7 @@ int main(int argc, char **argv) {
         state_start += state_interval;
       }
       state_end += state_interval;
-      constraint_start += 0;
+      constraint_start += state_interval;
 
     }
         slam_problem.SolveOptProblem();

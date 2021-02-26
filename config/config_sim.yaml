@@ -24,6 +24,7 @@ landmark_generation:
   box_z: 1 # box offset from uav height
   
 landmark_init_noise: 0.05
+#landmark_init_noise: 0.000001
 
 camera:
   T_bc:
@@ -35,3 +36,4 @@ camera:
   focal_length: [500.0, 500.0]
   principal_point: [0.0, 0.0]
   observation_noise: 0.00025
+#  observation_noise: 0.000001

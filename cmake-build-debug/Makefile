@@ -261,6 +261,32 @@ sim_boem_app/fast:
 .PHONY : sim_boem_app/fast
 
 #=============================================================================
+# Target rules for targets named sim_opt_exp_win_v3
+
+# Build rule for target.
+sim_opt_exp_win_v3: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 sim_opt_exp_win_v3
+.PHONY : sim_opt_exp_win_v3
+
+# fast build rule for target.
+sim_opt_exp_win_v3/fast:
+	$(MAKE) $(MAKESILENT) -f sim/sim_visualization/CMakeFiles/sim_opt_exp_win_v3.dir/build.make sim/sim_visualization/CMakeFiles/sim_opt_exp_win_v3.dir/build
+.PHONY : sim_opt_exp_win_v3/fast
+
+#=============================================================================
+# Target rules for targets named sim_opt_exp_win_v2
+
+# Build rule for target.
+sim_opt_exp_win_v2: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 sim_opt_exp_win_v2
+.PHONY : sim_opt_exp_win_v2
+
+# fast build rule for target.
+sim_opt_exp_win_v2/fast:
+	$(MAKE) $(MAKESILENT) -f sim/sim_visualization/CMakeFiles/sim_opt_exp_win_v2.dir/build.make sim/sim_visualization/CMakeFiles/sim_opt_exp_win_v2.dir/build
+.PHONY : sim_opt_exp_win_v2/fast
+
+#=============================================================================
 # Target rules for targets named sim_opt_vis
 
 # Build rule for target.
@@ -401,6 +427,8 @@ help:
 	@echo "... sim_em_vis"
 	@echo "... sim_em_vis_exp_win"
 	@echo "... sim_opt_app"
+	@echo "... sim_opt_exp_win_v2"
+	@echo "... sim_opt_exp_win_v3"
 	@echo "... sim_opt_vis"
 	@echo "... sim_opt_vis_exp_win"
 	@echo "... traj_process_app"

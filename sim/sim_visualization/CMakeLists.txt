@@ -129,3 +129,43 @@ target_link_libraries(sim_boem_vis_exp_win
         PUBLIC ${Boost_LIBRARIES}
         PUBLIC lib
         )
+
+add_executable(sim_opt_exp_win_v2
+        sim_opt_exp_win_v2.cc
+        )
+
+target_include_directories(sim_opt_exp_win_v2
+        PUBLIC ${OpenCV_INCLUDE_DIRS}          # not the target style
+        PUBLIC ${EIGEN3_INCLUDE_DIR}
+        PUBLIC ${CERES_INCLUDE_DIRS}
+        PUBLIC ${Boost_INCLUDE_DIRS}
+        PUBLIC lib
+        )
+
+target_link_libraries(sim_opt_exp_win_v2
+        PUBLIC ${OpenCV_LIBS}
+        PUBLIC ${EIGEN3_LIBS}
+        PUBLIC ceres
+        PUBLIC ${Boost_LIBRARIES}
+        PUBLIC lib
+        )
+
+add_executable(sim_opt_exp_win_v3
+        sim_opt_exp_win.cc
+        )
+
+target_include_directories(sim_opt_exp_win_v3
+        PUBLIC ${OpenCV_INCLUDE_DIRS}          # not the target style
+        PUBLIC ${EIGEN3_INCLUDE_DIR}
+        PUBLIC ${CERES_INCLUDE_DIRS}
+        PUBLIC ${Boost_INCLUDE_DIRS}
+        PUBLIC lib
+        )
+
+target_link_libraries(sim_opt_exp_win_v3
+        PUBLIC ${OpenCV_LIBS}
+        PUBLIC ${EIGEN3_LIBS}
+        PUBLIC ceres
+        PUBLIC ${Boost_LIBRARIES}
+        PUBLIC lib
+        )
