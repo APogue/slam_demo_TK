@@ -469,14 +469,12 @@ class ExpLandmarkOptSLAM {
       //      }
 
       OutputResult("result/sim/exp_win_w_time/opt_"+ std::to_string(mc)+"_"+
-      std::to_string(state_end)+".csv");
-      if(mc == 0){
-        OutputGroundtruth("result/sim/exp_win_w_time/gt_" + std::to_string(state_end)+".csv");
-      }
+      std::to_string(state_end)+".csv", state_end);
+
       state_end += state_interval;
     }
 
-    std::ofstream output_file("result/sim/exp_win_w_time/opt_time_"+std::to_string(mc)+".csv");
+    std::ofstream output_file("result/sim/exp_win_w_time/process_time_"+std::to_string(mc)+".csv");
     output_file << "process_time\n";
     for (size_t i=0; i<process_time_vec_.size(); ++i) {
       output_file << std::to_string(process_time_vec_.at(i)) << std::endl;
@@ -488,28 +486,29 @@ class ExpLandmarkOptSLAM {
   }
 
 
-  void OutputGroundtruth(const std::string& output_file_name) {
-    std::ofstream traj_output_file(output_file_name);
+    bool OutputGroundtruth(std::string output_folder_name) {
+      std::ofstream traj_output_file(output_folder_name + "gt.csv");
 
-    traj_output_file << "timestamp,p_x,p_y,p_z,v_x,v_y,v_z,q_w,q_x,q_y,q_z\n";
+      traj_output_file << "timestamp,p_x,p_y,p_z,v_x,v_y,v_z,q_w,q_x,q_y,q_z\n";
 
-    for (size_t i=0; i<state_len_; ++i) {
-      traj_output_file << std::to_string(state_vec_.at(i)->timestamp_) << ",";
-      traj_output_file << std::to_string(state_vec_.at(i)->p_(0)) << ",";
-      traj_output_file << std::to_string(state_vec_.at(i)->p_(1)) << ",";
-      traj_output_file << std::to_string(state_vec_.at(i)->p_(2)) << ",";
-      traj_output_file << std::to_string(state_vec_.at(i)->v_(0)) << ",";
-      traj_output_file << std::to_string(state_vec_.at(i)->v_(1)) << ",";
-      traj_output_file << std::to_string(state_vec_.at(i)->v_(2)) << ",";
-      traj_output_file << std::to_string(state_vec_.at(i)->q_.w()) << ",";
-      traj_output_file << std::to_string(state_vec_.at(i)->q_.x()) << ",";
-      traj_output_file << std::to_string(state_vec_.at(i)->q_.y()) << ",";
-      traj_output_file << std::to_string(state_vec_.at(i)->q_.z()) << std::endl;
+      for (size_t i = 0; i < state_len_; ++i) {
+        traj_output_file << std::to_string(state_vec_.at(i)->timestamp_) << ",";
+        traj_output_file << std::to_string(state_vec_.at(i)->p_(0)) << ",";
+        traj_output_file << std::to_string(state_vec_.at(i)->p_(1)) << ",";
+        traj_output_file << std::to_string(state_vec_.at(i)->p_(2)) << ",";
+        traj_output_file << std::to_string(state_vec_.at(i)->v_(0)) << ",";
+        traj_output_file << std::to_string(state_vec_.at(i)->v_(1)) << ",";
+        traj_output_file << std::to_string(state_vec_.at(i)->v_(2)) << ",";
+        traj_output_file << std::to_string(state_vec_.at(i)->q_.w()) << ",";
+        traj_output_file << std::to_string(state_vec_.at(i)->q_.x()) << ",";
+        traj_output_file << std::to_string(state_vec_.at(i)->q_.y()) << ",";
+        traj_output_file << std::to_string(state_vec_.at(i)->q_.z()) << std::endl;
+      }
+
+      traj_output_file.close();
+
+      return true;
     }
-
-    traj_output_file.close();
-
-  }
 
     bool OutputLandmarks(const std::string& output_folder_name) {
       std::ofstream traj_output_file(output_folder_name + "lmk.csv");
@@ -529,13 +528,13 @@ class ExpLandmarkOptSLAM {
 
     }
 
-  void OutputResult(const std::string& output_file_name) {
+  void OutputResult(const std::string& output_file_name, int state_end) {
 
     std::ofstream output_file(output_file_name);
 
     output_file << "timestamp,p_x,p_y,p_z,v_x,v_y,v_z,q_w,q_x,q_y,q_z\n";
 
-    for (size_t i=0; i<state_len_; ++i) {
+    for (size_t i=0; i<state_end; ++i) {
 
       output_file << std::to_string(state_para_vec_.at(i)->GetTimestamp()) << ",";
       output_file << std::to_string(state_para_vec_.at(i)->GetPositionBlock()->estimate()(0)) << ",";
@@ -616,17 +615,16 @@ int main(int argc, char **argv) {
   srand((unsigned int) time(NULL)); //eigen uses the random number generator of the standard lib
   google::InitGoogleLogging(argv[0]);
   std::vector<double>   process_time_vec;
-  int mc = 0; // initialize monte carlo count
-  int state_len = 600; // initialize the trajectory length
-  int state_interval = 75; // to create the expanding window
-  for (size_t i = 0; i < 1; ++i) { // this loop is for the monte carlo
-
+  int state_len = 500; // initialize the trajectory length
+  int state_interval = 50; // to create the expanding window
+  for (size_t i = 0; i < 20; ++i) { // this loop is for the monte carlo
     ExpLandmarkOptSLAM slam_problem("config/config_sim.yaml", state_len);
     slam_problem.CreateTrajectory();
     slam_problem.CreateLandmark();
     slam_problem.CreateImuData();
     slam_problem.CreateObservationData();
-    slam_problem.SolveOptProblem(state_len, state_interval, mc);
+    slam_problem.SolveOptProblem(state_len, state_interval, i);
+    slam_problem.OutputGroundtruth("result/sim/exp_win_w_time/");
   }
   return 0;
 }
