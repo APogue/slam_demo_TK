@@ -353,10 +353,8 @@ class ExpLandmarkOptSLAM {
   }
 
 
-
-
-  bool SetupMStep() {
-
+  bool SolveBOEMProblem(int state_len, int state_interval, int mc) {
+    int state_end = state_interval;
     Eigen::Quaterniond q0 = state_vec_.at(0)->q_;
     Eigen::Vector3d v0 = state_vec_.at(0)->v_;
     Eigen::Vector3d p0 = state_vec_.at(0)->p_;
@@ -395,367 +393,351 @@ class ExpLandmarkOptSLAM {
       landmark_para_vec_.push_back(landmark_ptr);
     }
 
-    return true;
-  }
+    while(state_end<=state_len) {
+      std::cout << "Begin solving the BOEM problem." << std::endl;
+      boost::posix_time::ptime begin_time = boost::posix_time::microsec_clock::local_time();
 
-  bool SolveBoemProblem() {
+      // preperation for E step
+      std::vector<Estimate *> state_estimate;
+      state_estimate.resize(state_end - 1);
 
-    std::cout << "Begin solving the BOEM problem." << std::endl;
+      // block structure
+      size_t n = 1;
+      double a = 1.1;
+      double c = 30.25;
 
-    // preperation for E step
-    std::vector<Estimate*> state_estimate;
-    state_estimate.resize(state_para_vec_.size()-1);
+      size_t block_size = floor(c * pow(n, a));
+      size_t T = 0; //1;
 
-    // block structure
-    size_t n = 1;
-    double a = 1.1;
-    double c = 30.25;
+      bool reach_end = false;
 
-    size_t block_size = floor(c * pow(n, a)); 
-    size_t T = 0; //1;
+      // while (T+block_size < state_vec_.size()) {
+      while (!reach_end) {
 
-    bool reach_end = false;
+        std::cout << n << " " << T << ", " << T + block_size << std::endl;
 
-    // while (T+block_size < state_vec_.size()) {
-    while (!reach_end) {
+        ceres::Problem opt_problem;
+        ceres::Solver::Options opt_options;
+        ceres::Solver::Summary opt_summary;
 
-      std::cout << n << " " << T << ", " << T + block_size << std::endl;
-
-      ceres::Problem opt_problem;
-      ceres::Solver::Options opt_options;
-      ceres::Solver::Summary opt_summary;
-
-      opt_options.linear_solver_type = ceres::SPARSE_SCHUR;
-      opt_options.minimizer_progress_to_stdout = true;
-      opt_options.num_threads = 6;
-      opt_options.function_tolerance = 1e-20;
-      opt_options.parameter_tolerance = 1e-25;
-      opt_options.max_num_iterations = 20;
+        opt_options.linear_solver_type = ceres::SPARSE_SCHUR;
+        opt_options.minimizer_progress_to_stdout = true;
+        opt_options.num_threads = 6;
+        opt_options.function_tolerance = 1e-20;
+        opt_options.parameter_tolerance = 1e-25;
+        opt_options.max_num_iterations = 20;
 
 
-      for (size_t i=0; i<landmark_para_vec_.size(); ++i) {
-        opt_problem.AddParameterBlock(landmark_para_vec_.at(i)->parameters(), 3);
-      }
-
-      for (size_t i=T; i <T+block_size; ++i) {
-        opt_problem.AddParameterBlock(state_para_vec_.at(i+1)->GetRotationBlock()->parameters(), 4);  // bug with quat_parameterization_ptr_
-        opt_problem.AddParameterBlock(state_para_vec_.at(i+1)->GetVelocityBlock()->parameters(), 3);
-        opt_problem.AddParameterBlock(state_para_vec_.at(i+1)->GetPositionBlock()->parameters(), 3);
-
-        opt_problem.SetParameterBlockConstant(state_para_vec_.at(i+1)->GetRotationBlock()->parameters());
-        opt_problem.SetParameterBlockConstant(state_para_vec_.at(i+1)->GetVelocityBlock()->parameters());
-        opt_problem.SetParameterBlockConstant(state_para_vec_.at(i+1)->GetPositionBlock()->parameters());
-
-
-        for (size_t j=0; j<observation_vec_.at(i+1).size(); ++j) {
-          size_t landmark_idx = observation_vec_.at(i+1).at(j)->landmark_id_;  
-
-          ceres::CostFunction* cost_function = new ReprojectionError(observation_vec_.at(i+1).at(j)->feature_pos_,
-                                                                     T_bc_,
-                                                                     fu_, fv_,
-                                                                     cu_, cv_,
-                                                                     observation_vec_.at(i+1).at(j)->cov());
- 
-          opt_problem.AddResidualBlock(cost_function,
-                                       NULL,
-                                       state_para_vec_.at(i+1)->GetRotationBlock()->parameters(),
-                                       state_para_vec_.at(i+1)->GetPositionBlock()->parameters(),
-                                       landmark_para_vec_.at(landmark_idx)->parameters());
-        }
-      }
-
-
-
-
-
-      // E step
-      for (size_t i=T; i < T+block_size; ++i) {
-        state_estimate.at(i) = new Estimate;
-
-        // time update
-        Eigen::Quaterniond q0;
-        Eigen::Vector3d v0;
-        Eigen::Vector3d p0;
-
-        if (i==0) {
-          q0 = state_para_vec_.at(0)->GetRotationBlock()->estimate();
-          v0 = state_para_vec_.at(0)->GetVelocityBlock()->estimate();
-          p0 = state_para_vec_.at(0)->GetPositionBlock()->estimate();
-        }
-        else {
-          q0 = state_estimate.at(i-1)->q_;
-          v0 = state_estimate.at(i-1)->v_;
-          p0 = state_estimate.at(i-1)->p_;
+        for (size_t i = 0; i < landmark_para_vec_.size(); ++i) {
+          opt_problem.AddParameterBlock(landmark_para_vec_.at(i)->parameters(), 3);
         }
 
-        Eigen::Vector3d gyr = imu_vec_.at(i)->gyr_;  
-        Eigen::Vector3d acc = imu_vec_.at(i)->acc_;
+        for (size_t i = T; i < T + block_size; ++i) {
+          opt_problem.AddParameterBlock(state_para_vec_.at(i + 1)->GetRotationBlock()->parameters(),
+                                        4);  // bug with quat_parameterization_ptr_
+          opt_problem.AddParameterBlock(state_para_vec_.at(i + 1)->GetVelocityBlock()->parameters(), 3);
+          opt_problem.AddParameterBlock(state_para_vec_.at(i + 1)->GetPositionBlock()->parameters(), 3);
 
-        state_estimate.at(i)->p_ = p0 + dt_ * v0 + 0.5 * dt_*dt_ * (q0.toRotationMatrix()* acc + gravity);
-        state_estimate.at(i)->v_ = v0 + dt_ * (q0.toRotationMatrix()* acc + gravity);
-        state_estimate.at(i)->q_ = quat_pos(q0 * Exp_q(dt_ * gyr));
+          opt_problem.SetParameterBlockConstant(state_para_vec_.at(i + 1)->GetRotationBlock()->parameters());
+          opt_problem.SetParameterBlockConstant(state_para_vec_.at(i + 1)->GetVelocityBlock()->parameters());
+          opt_problem.SetParameterBlockConstant(state_para_vec_.at(i + 1)->GetPositionBlock()->parameters());
 
-        Eigen::Matrix<double, 9, 9> F = Eigen::Matrix<double, 9, 9>::Zero();
-        F.block<3,3>(0,0) = Exp(dt_*gyr).transpose();
-        F.block<3,3>(3,0) = (-1)*dt_*q0.toRotationMatrix()*Skew(acc);
-        F.block<3,3>(3,3) = Eigen::Matrix3d::Identity();
-        F.block<3,3>(6,0) = (-0.5)*dt_*dt_*q0.toRotationMatrix()*Skew(acc);
-        F.block<3,3>(6,3) = dt_*Eigen::Matrix3d::Identity();
-        F.block<3,3>(6,6) = Eigen::Matrix3d::Identity();
 
-        Eigen::Matrix<double, 9, 6> G = Eigen::Matrix<double, 9, 6>::Zero();
-        G.block<3,3>(0,0) = (-1)*dt_*Eigen::Matrix3d::Identity();
-        G.block<3,3>(3,3) = (-1)*dt_*q0.toRotationMatrix();
-        G.block<3,3>(6,3) = (-0.5)*dt_*dt_*q0.toRotationMatrix();
+          for (size_t j = 0; j < observation_vec_.at(i + 1).size(); ++j) {
+            size_t landmark_idx = observation_vec_.at(i + 1).at(j)->landmark_id_;
 
-        Eigen::Matrix<double, 6, 6> w_cov = Eigen::Matrix<double, 6, 6>::Zero();
-        w_cov.block<3,3>(0,0) = (sigma_g_c_*sigma_g_c_/dt_)*Eigen::Matrix3d::Identity();
-        w_cov.block<3,3>(3,3) = (sigma_a_c_*sigma_a_c_/dt_)*Eigen::Matrix3d::Identity();
+            ceres::CostFunction *cost_function = new ReprojectionError(observation_vec_.at(i + 1).at(j)->feature_pos_,
+                                                                       T_bc_,
+                                                                       fu_, fv_,
+                                                                       cu_, cv_,
+                                                                       observation_vec_.at(i + 1).at(j)->cov());
 
-        if (i==0) {
-          state_estimate.at(i)->cov_ = G * w_cov * G.transpose();
-        }
-        else {
-          state_estimate.at(i)->cov_ = F * state_estimate.at(i-1)->cov_ * F.transpose() + G * w_cov * G.transpose();
+            opt_problem.AddResidualBlock(cost_function,
+                                         NULL,
+                                         state_para_vec_.at(i + 1)->GetRotationBlock()->parameters(),
+                                         state_para_vec_.at(i + 1)->GetPositionBlock()->parameters(),
+                                         landmark_para_vec_.at(landmark_idx)->parameters());
+          }
         }
 
 
-        // observation update
-        Eigen::Matrix3d k_R = Eigen::Matrix3d::Identity();
-        Eigen::Vector3d k_v = Eigen::Vector3d::Zero();
-        Eigen::Vector3d k_p = Eigen::Vector3d::Zero();
-        Eigen::Matrix<double, 9, 9> obs_cov;
-        obs_cov = state_estimate.at(i)->cov_;
-
-        for (size_t j=0; j<observation_vec_.at(i+1).size(); ++j) {
-
-          Eigen::Vector3d landmark = landmark_para_vec_.at(observation_vec_.at(i+1).at(j)->landmark_id_)->estimate();
-          Eigen::Vector2d measurement = observation_vec_.at(i+1).at(j)->feature_pos_;
-          Eigen::Matrix2d R = observation_vec_.at(i+1).at(j)->cov();
-
-          Eigen::Matrix3d R_bc = T_bc_.topLeftCorner<3,3>();
-          Eigen::Vector3d t_bc = T_bc_.topRightCorner<3,1>();
-
-          Eigen::Matrix3d R_nb = state_estimate.at(i)->q_.toRotationMatrix();
-          Eigen::Vector3d t_nb = state_estimate.at(i)->p_;
-
-          Eigen::Matrix4d T_bn = Eigen::Matrix4d::Identity();
-          T_bn.topLeftCorner<3, 3>() = state_estimate.at(i)->q_.toRotationMatrix().transpose();
-          T_bn.topRightCorner<3, 1>() = -1 * state_estimate.at(i)->q_.toRotationMatrix().transpose() * state_estimate.at(i)->p_;
-
-          // Eigen::Vector3d landmark_c = R_bc.transpose() * ((R_nb.transpose()*(landmark - t_nb)) - t_bc);
-        
-          Eigen::Vector4d landmark_n = Eigen::Vector4d(0, 0, 0, 1);
-          landmark_n.head(3) = landmark_para_vec_.at(observation_vec_.at(i+1).at(j)->landmark_id_)->estimate();
-          Eigen::Vector4d landmark_c = T_bc_.transpose() * T_bn * landmark_n;
 
 
-          Eigen::Vector2d landmark_proj;
-          landmark_proj << fu_ * landmark_c[0]/landmark_c[2] + cu_, 
-                           fv_ * landmark_c[1]/landmark_c[2] + cv_;
 
-          // exclude outliers
-          Eigen::Vector2d innovation = measurement - landmark_proj;
-          // if (innovation.norm() < 80) {  
-          if (1) {  
+        // E step
+        for (size_t i = T; i < T + block_size; ++i) {
+          state_estimate.at(i) = new Estimate;
 
-            Eigen::Matrix<double, 2, 2> H_cam;
-            H_cam << fu_, 0.0,
-                     0.0, fv_;
+          // time update
+          Eigen::Quaterniond q0;
+          Eigen::Vector3d v0;
+          Eigen::Vector3d p0;
 
-            Eigen::Matrix<double, 2, 3> H_proj;
-            H_proj << 1.0/(landmark_c[2]), 0, -(landmark_c[0])/(landmark_c[2]*landmark_c[2]),
-                      0, 1.0/(landmark_c[2]), -(landmark_c[1])/(landmark_c[2]*landmark_c[2]);
+          if (i == 0) {
+            q0 = state_para_vec_.at(0)->GetRotationBlock()->estimate();
+            v0 = state_para_vec_.at(0)->GetVelocityBlock()->estimate();
+            p0 = state_para_vec_.at(0)->GetPositionBlock()->estimate();
+          } else {
+            q0 = state_estimate.at(i - 1)->q_;
+            v0 = state_estimate.at(i - 1)->v_;
+            p0 = state_estimate.at(i - 1)->p_;
+          }
 
-            Eigen::Matrix<double, 3, 9> H_trans;
-            H_trans.setZero();
-            H_trans.block<3,3>(0,0) = R_bc.transpose() * Skew(R_nb.transpose()*(landmark - t_nb));
-            H_trans.block<3,3>(0,6) = (-1) * R_bc.transpose() * R_nb.transpose();
+          Eigen::Vector3d gyr = imu_vec_.at(i)->gyr_;
+          Eigen::Vector3d acc = imu_vec_.at(i)->acc_;
 
-            Eigen::Matrix<double, 2, 9> H;
-            H = H_cam * H_proj * H_trans;
+          state_estimate.at(i)->p_ = p0 + dt_ * v0 + 0.5 * dt_ * dt_ * (q0.toRotationMatrix() * acc + gravity);
+          state_estimate.at(i)->v_ = v0 + dt_ * (q0.toRotationMatrix() * acc + gravity);
+          state_estimate.at(i)->q_ = quat_pos(q0 * Exp_q(dt_ * gyr));
 
+          Eigen::Matrix<double, 9, 9> F = Eigen::Matrix<double, 9, 9>::Zero();
+          F.block<3, 3>(0, 0) = Exp(dt_ * gyr).transpose();
+          F.block<3, 3>(3, 0) = (-1) * dt_ * q0.toRotationMatrix() * Skew(acc);
+          F.block<3, 3>(3, 3) = Eigen::Matrix3d::Identity();
+          F.block<3, 3>(6, 0) = (-0.5) * dt_ * dt_ * q0.toRotationMatrix() * Skew(acc);
+          F.block<3, 3>(6, 3) = dt_ * Eigen::Matrix3d::Identity();
+          F.block<3, 3>(6, 6) = Eigen::Matrix3d::Identity();
 
-            Eigen::Matrix<double, 9, 2> K;
-            K = obs_cov * H.transpose() * (H * obs_cov * H.transpose() + R).inverse();
-            Eigen::Matrix<double, 9, 1> m;
-            m = K * (measurement - landmark_proj);
+          Eigen::Matrix<double, 9, 6> G = Eigen::Matrix<double, 9, 6>::Zero();
+          G.block<3, 3>(0, 0) = (-1) * dt_ * Eigen::Matrix3d::Identity();
+          G.block<3, 3>(3, 3) = (-1) * dt_ * q0.toRotationMatrix();
+          G.block<3, 3>(6, 3) = (-0.5) * dt_ * dt_ * q0.toRotationMatrix();
 
-            k_R = k_R * Exp(m.block<3,1>(0,0));
-            k_v = k_v + m.block<3,1>(3,0);
-            k_p = k_p + m.block<3,1>(6,0);  
+          Eigen::Matrix<double, 6, 6> w_cov = Eigen::Matrix<double, 6, 6>::Zero();
+          w_cov.block<3, 3>(0, 0) = (sigma_g_c_ * sigma_g_c_ / dt_) * Eigen::Matrix3d::Identity();
+          w_cov.block<3, 3>(3, 3) = (sigma_a_c_ * sigma_a_c_ / dt_) * Eigen::Matrix3d::Identity();
 
-            Eigen::Matrix<double, 9, 9> IKH;
-            IKH = Eigen::Matrix<double, 9, 9>::Identity() - K * H;
-            obs_cov = IKH * obs_cov * IKH.transpose() + K * R * K.transpose();     // Joseph form
-          
+          if (i == 0) {
+            state_estimate.at(i)->cov_ = G * w_cov * G.transpose();
+          } else {
+            state_estimate.at(i)->cov_ = F * state_estimate.at(i - 1)->cov_ * F.transpose() + G * w_cov * G.transpose();
           }
 
 
+          // observation update
+          Eigen::Matrix3d k_R = Eigen::Matrix3d::Identity();
+          Eigen::Vector3d k_v = Eigen::Vector3d::Zero();
+          Eigen::Vector3d k_p = Eigen::Vector3d::Zero();
+          Eigen::Matrix<double, 9, 9> obs_cov;
+          obs_cov = state_estimate.at(i)->cov_;
+
+          for (size_t j = 0; j < observation_vec_.at(i + 1).size(); ++j) {
+
+            Eigen::Vector3d landmark = landmark_para_vec_.at(
+                    observation_vec_.at(i + 1).at(j)->landmark_id_)->estimate();
+            Eigen::Vector2d measurement = observation_vec_.at(i + 1).at(j)->feature_pos_;
+            Eigen::Matrix2d R = observation_vec_.at(i + 1).at(j)->cov();
+
+            Eigen::Matrix3d R_bc = T_bc_.topLeftCorner<3, 3>();
+            Eigen::Vector3d t_bc = T_bc_.topRightCorner<3, 1>();
+
+            Eigen::Matrix3d R_nb = state_estimate.at(i)->q_.toRotationMatrix();
+            Eigen::Vector3d t_nb = state_estimate.at(i)->p_;
+
+            Eigen::Matrix4d T_bn = Eigen::Matrix4d::Identity();
+            T_bn.topLeftCorner<3, 3>() = state_estimate.at(i)->q_.toRotationMatrix().transpose();
+            T_bn.topRightCorner<3, 1>() =
+                    -1 * state_estimate.at(i)->q_.toRotationMatrix().transpose() * state_estimate.at(i)->p_;
+
+            // Eigen::Vector3d landmark_c = R_bc.transpose() * ((R_nb.transpose()*(landmark - t_nb)) - t_bc);
+
+            Eigen::Vector4d landmark_n = Eigen::Vector4d(0, 0, 0, 1);
+            landmark_n.head(3) = landmark_para_vec_.at(observation_vec_.at(i + 1).at(j)->landmark_id_)->estimate();
+            Eigen::Vector4d landmark_c = T_bc_.transpose() * T_bn * landmark_n;
+
+
+            Eigen::Vector2d landmark_proj;
+            landmark_proj << fu_ * landmark_c[0] / landmark_c[2] + cu_,
+                    fv_ * landmark_c[1] / landmark_c[2] + cv_;
+
+            // exclude outliers
+            Eigen::Vector2d innovation = measurement - landmark_proj;
+            // if (innovation.norm() < 80) {
+            if (1) {
+
+              Eigen::Matrix<double, 2, 2> H_cam;
+              H_cam << fu_, 0.0,
+                      0.0, fv_;
+
+              Eigen::Matrix<double, 2, 3> H_proj;
+              H_proj << 1.0 / (landmark_c[2]), 0, -(landmark_c[0]) / (landmark_c[2] * landmark_c[2]),
+                      0, 1.0 / (landmark_c[2]), -(landmark_c[1]) / (landmark_c[2] * landmark_c[2]);
+
+              Eigen::Matrix<double, 3, 9> H_trans;
+              H_trans.setZero();
+              H_trans.block<3, 3>(0, 0) = R_bc.transpose() * Skew(R_nb.transpose() * (landmark - t_nb));
+              H_trans.block<3, 3>(0, 6) = (-1) * R_bc.transpose() * R_nb.transpose();
+
+              Eigen::Matrix<double, 2, 9> H;
+              H = H_cam * H_proj * H_trans;
+
+
+              Eigen::Matrix<double, 9, 2> K;
+              K = obs_cov * H.transpose() * (H * obs_cov * H.transpose() + R).inverse();
+              Eigen::Matrix<double, 9, 1> m;
+              m = K * (measurement - landmark_proj);
+
+              k_R = k_R * Exp(m.block<3, 1>(0, 0));
+              k_v = k_v + m.block<3, 1>(3, 0);
+              k_p = k_p + m.block<3, 1>(6, 0);
+
+              Eigen::Matrix<double, 9, 9> IKH;
+              IKH = Eigen::Matrix<double, 9, 9>::Identity() - K * H;
+              obs_cov = IKH * obs_cov * IKH.transpose() + K * R * K.transpose();     // Joseph form
+
+            }
+
+
+          }
+
+          // if (k_p.norm() < 0.65) {
+          if (1) {
+
+            state_estimate.at(i)->q_ = quat_pos(Eigen::Quaterniond(state_estimate.at(i)->q_ * k_R));
+            state_estimate.at(i)->v_ = state_estimate.at(i)->v_ + k_v;
+            state_estimate.at(i)->p_ = state_estimate.at(i)->p_ + k_p;
+
+            state_estimate.at(i)->cov_ = obs_cov;
+          }
+
+
+          // can check numerical error
+          // std::cout << i << " " << state_estimate.at(i)->cov_.trace() << std::endl;
 
         }
- 
-        // if (k_p.norm() < 0.65) {
-        if (1) {
 
-          state_estimate.at(i)->q_ = quat_pos(Eigen::Quaterniond(state_estimate.at(i)->q_ * k_R));
-          state_estimate.at(i)->v_ = state_estimate.at(i)->v_ + k_v;
-          state_estimate.at(i)->p_ = state_estimate.at(i)->p_ + k_p;
+        // backward RTS smoother
 
-          state_estimate.at(i)->cov_ = obs_cov;
+        for (int i = T + block_size - 2; i > T - 1; --i) {
+
+          // std::cout << "RTS smoother: " << i << std::endl;
+
+          Eigen::Quaterniond q0 = state_estimate.at(i)->q_;
+          Eigen::Vector3d v0 = state_estimate.at(i)->v_;
+          Eigen::Vector3d p0 = state_estimate.at(i)->p_;
+
+          Eigen::Vector3d gyr = imu_vec_.at(i)->gyr_;
+          Eigen::Vector3d acc = imu_vec_.at(i)->acc_;
+
+
+          Eigen::Matrix<double, 9, 9> F = Eigen::Matrix<double, 9, 9>::Zero();
+          F.block<3, 3>(0, 0) = Exp(dt_ * gyr).transpose();
+          F.block<3, 3>(3, 0) = (-1) * dt_ * q0.toRotationMatrix() * Skew(acc);
+          F.block<3, 3>(3, 3) = Eigen::Matrix3d::Identity();
+          F.block<3, 3>(6, 0) = (-0.5) * dt_ * dt_ * q0.toRotationMatrix() * Skew(acc);
+          F.block<3, 3>(6, 3) = dt_ * Eigen::Matrix3d::Identity();
+          F.block<3, 3>(6, 6) = Eigen::Matrix3d::Identity();
+
+          Eigen::Matrix<double, 9, 6> G = Eigen::Matrix<double, 9, 6>::Zero();
+          G.block<3, 3>(0, 0) = (-1) * dt_ * Eigen::Matrix3d::Identity();
+          G.block<3, 3>(3, 3) = (-1) * dt_ * q0.toRotationMatrix();
+          G.block<3, 3>(6, 3) = (-0.5) * dt_ * dt_ * q0.toRotationMatrix();
+
+          Eigen::Matrix<double, 6, 6> w_cov = Eigen::Matrix<double, 6, 6>::Zero();
+          w_cov.block<3, 3>(0, 0) = (sigma_g_c_ * sigma_g_c_ / dt_) * Eigen::Matrix3d::Identity();
+          w_cov.block<3, 3>(3, 3) = (sigma_a_c_ * sigma_a_c_ / dt_) * Eigen::Matrix3d::Identity();
+
+          Eigen::Quaterniond q1 = quat_pos(q0 * Exp_q(dt_ * gyr));
+          Eigen::Vector3d v1 = v0 + dt_ * (q0.toRotationMatrix() * acc + gravity);
+          Eigen::Vector3d p1 = p0 + dt_ * v0 + 0.5 * dt_ * dt_ * (q0.toRotationMatrix() * acc + gravity);
+
+          Eigen::Matrix<double, 9, 9> C;
+          C = state_estimate.at(i)->cov_ * F.transpose() *
+              (F * state_estimate.at(i)->cov_ * F.transpose() + G * w_cov * G.transpose()).inverse();
+
+          Eigen::Matrix<double, 9, 1> residual;
+          residual.block<3, 1>(0, 0) = Log_q(q1.conjugate() * state_estimate.at(i + 1)->q_);
+          residual.block<3, 1>(3, 0) = state_estimate.at(i + 1)->v_ - v1;
+          residual.block<3, 1>(6, 0) = state_estimate.at(i + 1)->p_ - p1;
+
+          Eigen::Matrix<double, 9, 1> m;
+          m = C * residual;  // give the IMU results less weight
+
+
+          // std::cout << m << std::endl;
+          // std::cin.get();
+
+          state_estimate.at(i)->q_ = quat_pos(state_estimate.at(i)->q_ * Exp_q(m.block<3, 1>(0, 0)));
+          state_estimate.at(i)->v_ = state_estimate.at(i)->v_ + m.block<3, 1>(3, 0);
+          state_estimate.at(i)->p_ = state_estimate.at(i)->p_ + m.block<3, 1>(6, 0);
+
+          // ignore sigma update
+
         }
-          
-
-        // can check numerical error
-        // std::cout << i << " " << state_estimate.at(i)->cov_.trace() << std::endl;
-
-      }
-
-      // backward RTS smoother
-      
-      for (int i=T+block_size-2; i>T-1; --i) {
-
-        // std::cout << "RTS smoother: " << i << std::endl;
-
-        Eigen::Quaterniond q0 = state_estimate.at(i)->q_;
-        Eigen::Vector3d v0 = state_estimate.at(i)->v_;
-        Eigen::Vector3d p0 = state_estimate.at(i)->p_;
-
-        Eigen::Vector3d gyr = imu_vec_.at(i)->gyr_;  
-        Eigen::Vector3d acc = imu_vec_.at(i)->acc_;
 
 
-        Eigen::Matrix<double, 9, 9> F = Eigen::Matrix<double, 9, 9>::Zero();
-        F.block<3,3>(0,0) = Exp(dt_*gyr).transpose();
-        F.block<3,3>(3,0) = (-1)*dt_*q0.toRotationMatrix()*Skew(acc);
-        F.block<3,3>(3,3) = Eigen::Matrix3d::Identity();
-        F.block<3,3>(6,0) = (-0.5)*dt_*dt_*q0.toRotationMatrix()*Skew(acc);
-        F.block<3,3>(6,3) = dt_*Eigen::Matrix3d::Identity();
-        F.block<3,3>(6,6) = Eigen::Matrix3d::Identity();
-
-        Eigen::Matrix<double, 9, 6> G = Eigen::Matrix<double, 9, 6>::Zero();
-        G.block<3,3>(0,0) = (-1)*dt_*Eigen::Matrix3d::Identity();
-        G.block<3,3>(3,3) = (-1)*dt_*q0.toRotationMatrix();
-        G.block<3,3>(6,3) = (-0.5)*dt_*dt_*q0.toRotationMatrix();
-
-        Eigen::Matrix<double, 6, 6> w_cov = Eigen::Matrix<double, 6, 6>::Zero();
-        w_cov.block<3,3>(0,0) = (sigma_g_c_*sigma_g_c_/dt_)*Eigen::Matrix3d::Identity();
-        w_cov.block<3,3>(3,3) = (sigma_a_c_*sigma_a_c_/dt_)*Eigen::Matrix3d::Identity();
-
-        Eigen::Quaterniond q1 = quat_pos(q0 * Exp_q(dt_ * gyr));
-        Eigen::Vector3d v1 = v0 + dt_ * (q0.toRotationMatrix()* acc + gravity);
-        Eigen::Vector3d p1 = p0 + dt_ * v0 + 0.5 * dt_*dt_ * (q0.toRotationMatrix()* acc + gravity);
-
-        Eigen::Matrix<double, 9, 9> C;
-        C = state_estimate.at(i)->cov_ * F.transpose() * (F * state_estimate.at(i)->cov_ * F.transpose() + G * w_cov * G.transpose()).inverse();
-
-        Eigen::Matrix<double, 9, 1> residual;
-        residual.block<3,1>(0,0) = Log_q(q1.conjugate() * state_estimate.at(i+1)->q_);
-        residual.block<3,1>(3,0) = state_estimate.at(i+1)->v_ - v1;
-        residual.block<3,1>(6,0) = state_estimate.at(i+1)->p_ - p1;
-
-        Eigen::Matrix<double, 9, 1> m;
-        m = C * residual;  // give the IMU results less weight
-
-
-        // std::cout << m << std::endl;
-        // std::cin.get();
-
-        state_estimate.at(i)->q_ = quat_pos(state_estimate.at(i)->q_ * Exp_q(m.block<3,1>(0,0)));
-        state_estimate.at(i)->v_ = state_estimate.at(i)->v_ + m.block<3,1>(3,0);
-        state_estimate.at(i)->p_ = state_estimate.at(i)->p_ + m.block<3,1>(6,0);
-
-        // ignore sigma update
-
-      }    
-
-
-      // update the state estimate
-      for (size_t i=T; i < T+block_size; ++i) {
-        state_para_vec_.at(i+1)->GetRotationBlock()->setEstimate(state_estimate.at(i)->q_);
-        state_para_vec_.at(i+1)->GetVelocityBlock()->setEstimate(state_estimate.at(i)->v_);
-        state_para_vec_.at(i+1)->GetPositionBlock()->setEstimate(state_estimate.at(i)->p_);
-      }
-
-
-      // M step (average version)
-
-      std::vector<Eigen::Vector3d> landmark_estimate;
-      landmark_estimate.resize(landmark_para_vec_.size());
-
-      for (size_t i =0; i<landmark_para_vec_.size(); ++i) {
-        landmark_estimate.at(i) = landmark_para_vec_.at(i)->estimate();
-      }
-
-      ceres::Solve(opt_options, &opt_problem, &opt_summary);
-      double alpha = double(block_size) / double(T+block_size+10);
-      for (size_t i =0; i<landmark_para_vec_.size(); ++i) {
-        landmark_para_vec_.at(i)->setEstimate((1 - alpha) * landmark_estimate.at(i) + alpha * landmark_para_vec_.at(i)->estimate());
-      }
-
-
-
-
-      // block interval update
-      T = T + block_size;
-
-      if (T == state_vec_.size()-1) {
-        reach_end = true;
-      }
-      else {
-        n++;
-        block_size = floor(c * pow(n, a));
-
-        if (T+block_size > state_vec_.size() - 1) {
-          block_size = state_vec_.size() - T -1;
+        // update the state estimate
+        for (size_t i = T; i < T + block_size; ++i) {
+          state_para_vec_.at(i + 1)->GetRotationBlock()->setEstimate(state_estimate.at(i)->q_);
+          state_para_vec_.at(i + 1)->GetVelocityBlock()->setEstimate(state_estimate.at(i)->v_);
+          state_para_vec_.at(i + 1)->GetPositionBlock()->setEstimate(state_estimate.at(i)->p_);
         }
-      }
-    
-    } // while
-
-    return true;
-  }
 
 
+        // M step (average version)
+
+        std::vector<Eigen::Vector3d> landmark_estimate;
+        landmark_estimate.resize(landmark_para_vec_.size());
+
+        for (size_t i = 0; i < landmark_para_vec_.size(); ++i) {
+          landmark_estimate.at(i) = landmark_para_vec_.at(i)->estimate();
+        }
+
+        ceres::Solve(opt_options, &opt_problem, &opt_summary);
+        double alpha = double(block_size) / double(T + block_size + 10);
+        for (size_t i = 0; i < landmark_para_vec_.size(); ++i) {
+          landmark_para_vec_.at(i)->setEstimate(
+                  (1 - alpha) * landmark_estimate.at(i) + alpha * landmark_para_vec_.at(i)->estimate());
+        }
 
 
 
 
+        // block interval update
+        T = T + block_size;
 
-  bool OutputGroundtruth(std::string output_folder_name) {
-    std::ofstream traj_output_file(output_folder_name + "gt.csv");
+        if (T == state_end - 1) {
+          reach_end = true;
+        } else {
+          n++;
+          block_size = floor(c * pow(n, a));
 
-    traj_output_file << "timestamp,p_x,p_y,p_z,v_x,v_y,v_z,q_w,q_x,q_y,q_z\n";
+          if (T + block_size > state_end - 1) {
+            block_size = state_end - T - 1;
+          }
+        }
 
-    for (size_t i=0; i<state_len_; ++i) {
+      } // while
+      // optimization setup and solution time
+      boost::posix_time::ptime end_time = boost::posix_time::microsec_clock::local_time();
+      boost::posix_time::time_duration t = end_time - begin_time;
+      double dt = ((double) t.total_nanoseconds() * 1e-9);
 
-      traj_output_file << std::to_string(state_vec_.at(i)->timestamp_) << ",";
-      traj_output_file << std::to_string(state_vec_.at(i)->p_(0)) << ",";
-      traj_output_file << std::to_string(state_vec_.at(i)->p_(1)) << ",";
-      traj_output_file << std::to_string(state_vec_.at(i)->p_(2)) << ",";
-      traj_output_file << std::to_string(state_vec_.at(i)->v_(0)) << ",";
-      traj_output_file << std::to_string(state_vec_.at(i)->v_(1)) << ",";
-      traj_output_file << std::to_string(state_vec_.at(i)->v_(2)) << ",";
-      traj_output_file << std::to_string(state_vec_.at(i)->q_.w()) << ",";
-      traj_output_file << std::to_string(state_vec_.at(i)->q_.x()) << ",";
-      traj_output_file << std::to_string(state_vec_.at(i)->q_.y()) << ",";
-      traj_output_file << std::to_string(state_vec_.at(i)->q_.z()) << std::endl;
+      std::cout << "The entire time is " << dt << " sec." << std::endl;
+      process_time_vec_.push_back(dt);
+      //      }
+
+      OutputResult("result/sim/exp_win_w_time/boem_"+ std::to_string(mc)+"_"+
+                   std::to_string(state_end)+".csv", state_end);
+      state_end += state_interval;
     }
-
-    traj_output_file.close();
-
+    std::ofstream output_file("result/sim/exp_win_w_time/boem_process_time_"+std::to_string(mc)+".csv");
+    output_file << "process_time\n";
+    for (size_t i=0; i<process_time_vec_.size(); ++i) {
+      output_file << std::to_string(process_time_vec_.at(i)) << std::endl;
+    }
+    output_file.close();
     return true;
-
-
   }
 
-  bool OutputResult(std::string output_file_name) {
+
+  void OutputResult(const std::string& output_file_name, int state_end) {
 
     std::ofstream output_file(output_file_name);
 
     output_file << "timestamp,p_x,p_y,p_z,v_x,v_y,v_z,q_w,q_x,q_y,q_z\n";
 
-    for (size_t i=0; i<state_len_; ++i) {
+    for (size_t i=0; i<state_end; ++i) {
 
       output_file << std::to_string(state_para_vec_.at(i)->GetTimestamp()) << ",";
       output_file << std::to_string(state_para_vec_.at(i)->GetPositionBlock()->estimate()(0)) << ",";
@@ -772,7 +754,6 @@ class ExpLandmarkOptSLAM {
 
     output_file.close();
 
-    return true;
   }
   
 
@@ -818,7 +799,7 @@ class ExpLandmarkOptSLAM {
   // ground truth containers
   std::vector<State*>                         state_vec_;
   std::vector<Eigen::Vector3d>                landmark_vec_;
-
+  std::vector<double>                         process_time_vec_;
 
   // parameter containers
   std::vector<StatePara*>                     state_para_vec_;
@@ -829,9 +810,9 @@ class ExpLandmarkOptSLAM {
   
 
   // ceres parameter
-  ceres::Problem                              optimization_problem_;
-  ceres::Solver::Options                      optimization_options_;
-  ceres::Solver::Summary                      optimization_summary_;
+//  ceres::Problem                              optimization_problem_;
+//  ceres::Solver::Options                      optimization_options_;
+//  ceres::Solver::Summary                      optimization_summary_;
 
 };
 
@@ -840,42 +821,16 @@ class ExpLandmarkOptSLAM {
 int main(int argc, char **argv) {
   srand((unsigned int) time(NULL)); //eigen uses the random number generator of the standard lib
   google::InitGoogleLogging(argv[0]);
-  std::vector<double>   process_time_vec;
-  int k;
+  int state_len = 500; // initialize the trajectory length
+  int state_interval = 50; // to create the expanding window
   for (size_t i = 0; i < 20; ++i) {
-    k = 100;
-    for (size_t m = 0; m < 10; ++m) {
-      ExpLandmarkOptSLAM slam_problem("config/config_sim.yaml", k);
-
-      slam_problem.CreateTrajectory();
-      slam_problem.CreateLandmark();
-
-      slam_problem.CreateImuData();
-      slam_problem.CreateObservationData();
-
-      boost::posix_time::ptime begin_time = boost::posix_time::microsec_clock::local_time();
-
-      slam_problem.SetupMStep();
-
-      slam_problem.SolveBoemProblem();
-
-      boost::posix_time::ptime end_time = boost::posix_time::microsec_clock::local_time();
-      boost::posix_time::time_duration t = end_time - begin_time;
-      double dt = ((double) t.total_nanoseconds() * 1e-9);
-
-      std::cout << "The entire time is " << dt << " sec." << std::endl;
-      process_time_vec.push_back(dt);
-
-//    slam_problem.OutputResult("result/sim/vis/boem_" + std::to_string(i) + ".csv");
-      k += 50;
-    }
-    std::ofstream output_file("result/sim/vis/boem_time_" + std::to_string(i) + ".csv");
-    output_file << "process_time\n";
-    for (size_t i = 0; i < process_time_vec.size(); ++i) {
-      output_file << std::to_string(process_time_vec.at(i)) << std::endl;
-    }
-    output_file.close();
-    process_time_vec.clear();
+    ExpLandmarkOptSLAM slam_problem("config/config_sim.yaml", state_len);
+    slam_problem.CreateTrajectory();
+    slam_problem.CreateLandmark();
+    slam_problem.CreateImuData();
+    slam_problem.CreateObservationData();
+    slam_problem.SolveBOEMProblem(state_len, state_interval, i);
   }
+
   return 0;
 }
