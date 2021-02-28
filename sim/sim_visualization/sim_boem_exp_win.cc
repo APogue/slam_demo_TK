@@ -430,7 +430,7 @@ public:
         opt_options.num_threads = 6;
         opt_options.function_tolerance = 1e-20;
         opt_options.parameter_tolerance = 1e-25;
-        opt_options.max_num_iterations = 100; //was 20
+        opt_options.max_num_iterations = 20;
 
 
         for (size_t i=0; i<landmark_para_vec_.size(); ++i) {
@@ -680,18 +680,18 @@ public:
 
         // M step (average version)
 
-        std::vector<Eigen::Vector3d> landmark_estimate;
-        landmark_estimate.resize(landmark_para_vec_.size());
-
-        for (size_t i =0; i<landmark_para_vec_.size(); ++i) {
-          landmark_estimate.at(i) = landmark_para_vec_.at(i)->estimate();
-        }
+//        std::vector<Eigen::Vector3d> landmark_estimate;
+//        landmark_estimate.resize(landmark_para_vec_.size());
+//
+//        for (size_t i =0; i<landmark_para_vec_.size(); ++i) {
+//          landmark_estimate.at(i) = landmark_para_vec_.at(i)->estimate();
+//        }
 
         ceres::Solve(opt_options, &opt_problem, &opt_summary);
-        double alpha = double(block_size) / double(T+block_size+10);
-        for (size_t i =0; i<landmark_para_vec_.size(); ++i) {
-          landmark_para_vec_.at(i)->setEstimate((1 - alpha) * landmark_estimate.at(i) + alpha * landmark_para_vec_.at(i)->estimate());
-        }
+//        double alpha = double(block_size) / double(T+block_size+10);
+//        for (size_t i =0; i<landmark_para_vec_.size(); ++i) {
+//          landmark_para_vec_.at(i)->setEstimate((1 - alpha) * landmark_estimate.at(i) + alpha * landmark_para_vec_.at(i)->estimate());
+//        }
 
 
 
@@ -859,11 +859,11 @@ int main(int argc, char **argv) {
       double dt = ((double) t.total_nanoseconds() * 1e-9);
       std::cout << "The entire time is " << dt << " sec." << std::endl;
       process_time_vec.push_back(dt);
-      slam_problem.OutputResult("result/sim/exp_win_w_time_boem100/boem_"+ std::to_string(i)+"_"+
+      slam_problem.OutputResult("result/sim/exp_win_w_time_bug_fix/boem_"+ std::to_string(i)+"_"+
                                 std::to_string(state_end)+".csv");
       state_end += state_interval;
     }
-    std::ofstream output_file("result/sim/exp_win_w_time_boem100/boem_process_time_"+std::to_string(i)+".csv");
+    std::ofstream output_file("result/sim/exp_win_w_time_bug_fix/boem_process_time_"+std::to_string(i)+".csv");
     output_file << "process_time\n";
     for (size_t i=0; i<process_time_vec.size(); ++i) {
       output_file << std::to_string(process_time_vec.at(i)) << std::endl;

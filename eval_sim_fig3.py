@@ -44,7 +44,7 @@ boem_process_time_array = []
 # time array corresponding to figure x-axis
 time_array = []
 for k in range(50, 900, 50):
-	boem_time_data = pd.read_csv("result/sim/exp_win_w_time/boem_%s_%s.csv" % (0, k))
+	boem_time_data = pd.read_csv("result/sim/exp_win_w_time_bug_fix/boem_%s_%s.csv" % (0, k))
 	time_array.append(boem_time_data['timestamp'][len(boem_time_data)-1])
 
 # arrays corresponding to average error and processing time across MC
@@ -56,7 +56,7 @@ for i in range(num_realizations):
 	em_time_data = pd.read_csv("result/sim/exp_win_w_time/em_process_time_%s.csv" % (i,))
 	em_process_time[i] = em_time_data['process_time'].transpose()
 
-	boem_time_data = pd.read_csv("result/sim/exp_win_w_time_boem100/boem_process_time_%s.csv" % (i,))
+	boem_time_data = pd.read_csv("result/sim/exp_win_w_time_bug_fix/boem_process_time_%s.csv" % (i,))
 	boem_process_time[i] = boem_time_data['process_time'].transpose()
 	for k in range(50, 900, 50):
 		opt_data = pd.read_csv("result/sim/exp_win_w_time/opt_%s_%s.csv" % (i, k))
@@ -65,7 +65,7 @@ for i in range(num_realizations):
 		em_data = pd.read_csv("result/sim/exp_win_w_time/em_%s_%s.csv" % (i, k))
 		em_error = np.zeros_like(em_data['p_x'])
 
-		boem_data = pd.read_csv("result/sim/exp_win_w_time_boem100/boem_%s_%s.csv" % (i, k))
+		boem_data = pd.read_csv("result/sim/exp_win_w_time_bug_fix/boem_%s_%s.csv" % (i, k))
 		boem_error = np.zeros_like(boem_data['p_x'])
 
 		for m in range(len(boem_data['p_x'])):

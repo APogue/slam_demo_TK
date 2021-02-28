@@ -54,11 +54,11 @@ for i in range(len(gt_data['p_x'])):
 	est_em_error_list_q = []
 	est_boem_error_list_q = []
 
-	for k in range(0,1):
+	for k in range(0,50):
 		dr_data = pd.read_csv("result/sim/long_traj/dr_%s.csv" %k)
 		est_opt_data = pd.read_csv("result/sim/long_traj/opt_%s.csv" %k)
 		est_em_data = pd.read_csv("result/sim/long_traj/em_%s.csv" %k)
-		est_boem_data = pd.read_csv("result/sim/long_traj/boem_%s.csv" %k)
+		est_boem_data = pd.read_csv("result/sim/long_traj_bug_fix/boem_%s.csv" %k)
 
 		dr_error_list_p.extend([(gt_data['p_x'][i]-dr_data['p_x'][i])**2, (gt_data['p_y'][i]-dr_data['p_y'][i])**2, (gt_data['p_z'][i]-dr_data['p_z'][i])**2])
 		est_opt_error_list_p.extend([(gt_data['p_x'][i]-est_opt_data['p_x'][i])**2, (gt_data['p_y'][i]-est_opt_data['p_y'][i])**2, (gt_data['p_z'][i]-est_opt_data['p_z'][i])**2])
@@ -89,7 +89,7 @@ ax1.plot(gt_data['timestamp'], est_opt_error_q, color = plot_color['opt'], linew
 ax1.plot(gt_data['timestamp'], est_em_error_q, color = plot_color['em'], linewidth=line_width, label='EM')
 ax1.plot(gt_data['timestamp'], est_boem_error_q, color = plot_color['boem'], linewidth=line_width, label='BOEM')
 ax1.set(ylabel='rotation RMSE [deg]')
-ax1.set_ylim(-0.2, 11.1)
+ax1.set_ylim(-0.2, 12.1)
 ax1.legend(loc = 1)
 
 
