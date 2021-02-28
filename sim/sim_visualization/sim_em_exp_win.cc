@@ -773,7 +773,7 @@ class ExpLandmarkOptSLAM {
 int main(int argc, char **argv) {
   srand((unsigned int) time(NULL)); //eigen uses the random number generator of the standard lib
   google::InitGoogleLogging(argv[0]);
-  int state_len = 500; // initialize the trajectory length
+  int state_len = 850; // initialize the trajectory length
   int state_interval = 50; // to create the expanding window
   for (size_t i = 0; i < 20; ++i) {
       ExpLandmarkOptSLAM slam_problem("config/config_sim.yaml", state_len);
