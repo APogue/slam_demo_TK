@@ -56,7 +56,7 @@ for i in range(num_realizations):
 	em_time_data = pd.read_csv("result/sim/exp_win_w_time/em_process_time_%s.csv" % (i,))
 	em_process_time[i] = em_time_data['process_time'].transpose()
 
-	boem_time_data = pd.read_csv("result/sim/exp_win_w_time/boem_process_time_%s.csv" % (i,))
+	boem_time_data = pd.read_csv("result/sim/exp_win_w_time_boem100/boem_process_time_%s.csv" % (i,))
 	boem_process_time[i] = boem_time_data['process_time'].transpose()
 	for k in range(50, 900, 50):
 		opt_data = pd.read_csv("result/sim/exp_win_w_time/opt_%s_%s.csv" % (i, k))
@@ -65,7 +65,7 @@ for i in range(num_realizations):
 		em_data = pd.read_csv("result/sim/exp_win_w_time/em_%s_%s.csv" % (i, k))
 		em_error = np.zeros_like(em_data['p_x'])
 
-		boem_data = pd.read_csv("result/sim/exp_win_w_time/boem_%s_%s.csv" % (i, k))
+		boem_data = pd.read_csv("result/sim/exp_win_w_time_boem100/boem_%s_%s.csv" % (i, k))
 		boem_error = np.zeros_like(boem_data['p_x'])
 
 		for m in range(len(boem_data['p_x'])):
@@ -87,8 +87,8 @@ em_process_time_array.extend(np.mean(em_process_time, axis=0, dtype=np.float64))
 boem_ave_error_array.extend(np.mean(boem_mc_ave_error, axis=0, dtype=np.float64))
 boem_process_time_array.extend(np.mean(boem_process_time, axis=0, dtype=np.float64))
 
-print('error',boem_ave_error_array)
-print('process_time',boem_process_time_array)
+print('error', boem_ave_error_array)
+print('process_time', boem_process_time_array)
 print('time', time_array)
 
 fig, (ax1, ax2) = plt.subplots(2)
