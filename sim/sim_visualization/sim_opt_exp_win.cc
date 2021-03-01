@@ -468,13 +468,13 @@ class ExpLandmarkOptSLAM {
       process_time_vec_.push_back(dt);
       //      }
 
-      OutputResult("result/sim/exp_win_w_time/opt_"+ std::to_string(mc)+"_"+
+      OutputResult("result/sim/exp_win_w_time_test/opt_"+ std::to_string(mc)+"_"+
       std::to_string(state_end)+".csv", state_end);
 
       state_end += state_interval;
     }
 
-    std::ofstream output_file("result/sim/exp_win_w_time/process_time_"+std::to_string(mc)+".csv");
+    std::ofstream output_file("result/sim/exp_win_w_time_test/process_time_"+std::to_string(mc)+".csv");
     output_file << "process_time\n";
     for (size_t i=0; i<process_time_vec_.size(); ++i) {
       output_file << std::to_string(process_time_vec_.at(i)) << std::endl;
@@ -616,14 +616,14 @@ int main(int argc, char **argv) {
   google::InitGoogleLogging(argv[0]);
   int state_len = 850; // initialize the trajectory length
   int state_interval = 50; // to create the expanding window
-  for (size_t i = 0; i < 20; ++i) { // this loop is for the monte carlo
+  for (size_t i = 0; i < 1; ++i) { // this loop is for the monte carlo
     ExpLandmarkOptSLAM slam_problem("config/config_sim.yaml", state_len);
     slam_problem.CreateTrajectory();
     slam_problem.CreateLandmark();
     slam_problem.CreateImuData();
     slam_problem.CreateObservationData();
     slam_problem.SolveOptProblem(state_len, state_interval, i);
-    slam_problem.OutputGroundtruth("result/sim/exp_win_w_time/");
+//    slam_problem.OutputGroundtruth("result/sim/exp_win_w_block_time/");
   }
   return 0;
 }

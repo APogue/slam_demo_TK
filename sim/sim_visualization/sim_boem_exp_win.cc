@@ -398,10 +398,10 @@ public:
       return true;
     }
 
-    bool SolveBoemProblem() {
+    bool SolveBoemProblem(int mc) {
 
       std::cout << "Begin solving the BOEM problem." << std::endl;
-
+      begin_time_ = boost::posix_time::microsec_clock::local_time();
       // preperation for E step
       std::vector<Estimate*> state_estimate;
       state_estimate.resize(state_para_vec_.size()-1);
@@ -701,26 +701,33 @@ public:
 
         if (T == state_vec_.size()-1) {
           reach_end = true;
+          //end timer
         }
         else {
           n++;
           block_size = floor(c * pow(n, a));
 
-          if (T+block_size > state_vec_.size() - 1) {
+          if (T+block_size >= state_vec_.size() - 1) {
             block_size = state_vec_.size() - T -1;
+            begin_time_ = boost::posix_time::microsec_clock::local_time();
           }
         }
 
       } // while
-
+      end_time_ = boost::posix_time::microsec_clock::local_time();
+      t_duration_ = end_time_ - begin_time_;
+      double dt = ((double) t_duration_.total_nanoseconds() * 1e-9);
+      std::cout << "The entire time is " << dt << " sec." << std::endl;
+      process_time_vec_.push_back(dt);
+      std::ofstream output_file("result/sim/exp_win_w_block_time/boem_process_time_"+std::to_string(mc)+".csv");
+      output_file << "process_time\n";
+      for (size_t ii=0; ii<process_time_vec_.size(); ++ii) {
+        output_file << std::to_string(process_time_vec_.at(ii)) << std::endl;
+      }
+      output_file.close();
+      process_time_vec_.clear();
       return true;
     }
-
-
-
-
-
-
 
     bool OutputGroundtruth(std::string output_folder_name) {
       std::ofstream traj_output_file(output_folder_name + "gt.csv");
@@ -833,17 +840,21 @@ private:
     ceres::Solver::Options                      optimization_options_;
     ceres::Solver::Summary                      optimization_summary_;
 
+    // timing parameter
+    boost::posix_time::ptime                    begin_time_;
+    boost::posix_time::ptime                    end_time_;
+    boost::posix_time::time_duration            t_duration_;
+    std::vector<double>                         process_time_vec_;
+
 };
-
-
 
 int main(int argc, char **argv) {
   srand((unsigned int) time(NULL)); //eigen uses the random number generator of the standard lib
   google::InitGoogleLogging(argv[0]);
   std::vector<double>                         process_time_vec;
   for (size_t i = 0; i < 20; ++i) {
-    int state_len = 850; // initialize the trajectory length
-    int state_interval = 50; // to create the expanding window
+    int state_len = 1000; // initialize the trajectory length
+    int state_interval = 100; // to create the expanding window
     int state_end = state_interval;
     while(state_end<=state_len) {
       ExpLandmarkOptSLAM slam_problem("config/config_sim.yaml", state_end);
@@ -852,24 +863,24 @@ int main(int argc, char **argv) {
       slam_problem.CreateImuData();
       slam_problem.CreateObservationData();
       slam_problem.SetupMStep();
-      boost::posix_time::ptime begin_time = boost::posix_time::microsec_clock::local_time();
-      slam_problem.SolveBoemProblem();
-      boost::posix_time::ptime end_time = boost::posix_time::microsec_clock::local_time();
-      boost::posix_time::time_duration t = end_time - begin_time;
-      double dt = ((double) t.total_nanoseconds() * 1e-9);
-      std::cout << "The entire time is " << dt << " sec." << std::endl;
-      process_time_vec.push_back(dt);
-      slam_problem.OutputResult("result/sim/exp_win_w_time_bug_fix/boem_"+ std::to_string(i)+"_"+
+//      boost::posix_time::ptime begin_time = boost::posix_time::microsec_clock::local_time();
+      slam_problem.SolveBoemProblem(i);
+//      boost::posix_time::ptime end_time = boost::posix_time::microsec_clock::local_time();
+//      boost::posix_time::time_duration t = end_time - begin_time;
+//      double dt = ((double) t.total_nanoseconds() * 1e-9);
+//      std::cout << "The entire time is " << dt << " sec." << std::endl;
+//      process_time_vec.push_back(dt);
+      slam_problem.OutputResult("result/sim/exp_win_w_block_time/boem_"+ std::to_string(i)+"_"+
                                 std::to_string(state_end)+".csv");
       state_end += state_interval;
     }
-    std::ofstream output_file("result/sim/exp_win_w_time_bug_fix/boem_process_time_"+std::to_string(i)+".csv");
-    output_file << "process_time\n";
-    for (size_t i=0; i<process_time_vec.size(); ++i) {
-      output_file << std::to_string(process_time_vec.at(i)) << std::endl;
-    }
-    output_file.close();
-    process_time_vec.clear();
+//    std::ofstream output_file("result/sim/exp_win_w_time_bug_fix/boem_process_time_"+std::to_string(i)+".csv");
+//    output_file << "process_time\n";
+//    for (size_t i=0; i<process_time_vec.size(); ++i) {
+//      output_file << std::to_string(process_time_vec.at(i)) << std::endl;
+//    }
+//    output_file.close();
+//    process_time_vec.clear();
   }
   return 0;
 }

@@ -57,7 +57,7 @@ for i in range(len(gt_data['p_x'])):
 	for k in range(0,50):
 		dr_data = pd.read_csv("result/sim/long_traj/dr_%s.csv" %k)
 		est_opt_data = pd.read_csv("result/sim/long_traj/opt_%s.csv" %k)
-		est_em_data = pd.read_csv("result/sim/long_traj/em_%s.csv" %k)
+		est_em_data = pd.read_csv("result/sim/long_traj_bug_fix/em_%s.csv" %k)
 		est_boem_data = pd.read_csv("result/sim/long_traj_bug_fix/boem_%s.csv" %k)
 
 		dr_error_list_p.extend([(gt_data['p_x'][i]-dr_data['p_x'][i])**2, (gt_data['p_y'][i]-dr_data['p_y'][i])**2, (gt_data['p_z'][i]-dr_data['p_z'][i])**2])

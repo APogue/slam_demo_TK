@@ -447,8 +447,8 @@ class ExpLandmarkOptSLAM {
     optimization_options_.max_num_iterations = 100;
 
     // M step
-    ceres::Solve(optimization_options_, &optimization_problem_, &optimization_summary_);
-    std::cout << optimization_summary_.FullReport() << "\n";
+    // ceres::Solve(optimization_options_, &optimization_problem_, &optimization_summary_);
+    // std::cout << optimization_summary_.FullReport() << "\n";
 
     // E step
     std::vector<Estimate*> state_estimate;
@@ -660,7 +660,9 @@ class ExpLandmarkOptSLAM {
       state_para_vec_.at(i+1)->GetPositionBlock()->setEstimate(state_estimate.at(i)->p_);
     }
 
-
+    // M step
+    ceres::Solve(optimization_options_, &optimization_problem_, &optimization_summary_);
+    std::cout << optimization_summary_.FullReport() << "\n";
 
     return true;
 

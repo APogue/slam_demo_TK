@@ -446,8 +446,8 @@ class ExpLandmarkOptSLAM {
 
     for(size_t ii = 0; ii < 2; ++ii) {
       // M step
-      ceres::Solve(optimization_options_, &optimization_problem_, &optimization_summary_);
-      std::cout << optimization_summary_.FullReport() << "\n";
+//      ceres::Solve(optimization_options_, &optimization_problem_, &optimization_summary_);
+//      std::cout << optimization_summary_.FullReport() << "\n";
 
       // E step
       std::vector<Estimate *> state_estimate;
@@ -659,6 +659,10 @@ class ExpLandmarkOptSLAM {
         state_para_vec_.at(i + 1)->GetPositionBlock()->setEstimate(state_estimate.at(i)->p_);
       }
 
+      // M step
+      ceres::Solve(optimization_options_, &optimization_problem_, &optimization_summary_);
+      std::cout << optimization_summary_.FullReport() << "\n";
+
     }
     // optimization setup and solution time
     boost::posix_time::ptime end_time = boost::posix_time::microsec_clock::local_time();
@@ -669,13 +673,13 @@ class ExpLandmarkOptSLAM {
     process_time_vec_.push_back(dt);
     //      }
 
-    OutputResult("result/sim/exp_win_w_time/em_"+ std::to_string(mc)+"_"+
+    OutputResult("result/sim/exp_win_w_block_time/em_"+ std::to_string(mc)+"_"+
                  std::to_string(state_end)+".csv", state_end);
 
     state_end += state_interval;
 
   }
-    std::ofstream output_file("result/sim/exp_win_w_time/em_process_time_"+std::to_string(mc)+".csv");
+    std::ofstream output_file("result/sim/exp_win_w_block_time/em_process_time_"+std::to_string(mc)+".csv");
     output_file << "process_time\n";
     for (size_t i=0; i<process_time_vec_.size(); ++i) {
       output_file << std::to_string(process_time_vec_.at(i)) << std::endl;
@@ -769,12 +773,11 @@ class ExpLandmarkOptSLAM {
 
 };
 
-
 int main(int argc, char **argv) {
   srand((unsigned int) time(NULL)); //eigen uses the random number generator of the standard lib
   google::InitGoogleLogging(argv[0]);
-  int state_len = 850; // initialize the trajectory length
-  int state_interval = 50; // to create the expanding window
+  int state_len = 1000; // initialize the trajectory length
+  int state_interval = 100; // to create the expanding window
   for (size_t i = 0; i < 20; ++i) {
       ExpLandmarkOptSLAM slam_problem("config/config_sim.yaml", state_len);
       slam_problem.CreateTrajectory();
@@ -783,6 +786,5 @@ int main(int argc, char **argv) {
       slam_problem.CreateObservationData();
       slam_problem.SolveEMProblem(state_len, state_interval, i);
     }
-
   return 0;
 }
