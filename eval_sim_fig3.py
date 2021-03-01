@@ -27,19 +27,24 @@ opt_mc_ave_error = np.zeros((num_realizations, num_files))
 opt_process_time = np.zeros_like(opt_mc_ave_error)
 opt_ave_error_array = []
 opt_process_time_array = []
+opt_process_time_sd = []
+opt_ave_error_sd = []
 
 # em containers
 em_mc_ave_error = np.zeros((num_realizations, num_files))
 em_process_time = np.zeros_like(em_mc_ave_error)
 em_ave_error_array = []
 em_process_time_array = []
+em_process_time_sd = []
+em_ave_error_sd = []
 
 # optimization containers
 boem_mc_ave_error = np.zeros((num_realizations, num_files))
 boem_process_time = np.zeros_like(boem_mc_ave_error)
 boem_ave_error_array = []
 boem_process_time_array = []
-
+boem_process_time_sd = []
+boem_ave_error_sd = []
 
 # time array corresponding to figure x-axis
 time_array = []
@@ -78,14 +83,21 @@ for i in range(num_realizations):
 		boem_mc_ave_error[i, h] = np.mean(boem_error, dtype=np.float64)
 		h += 1
 
+
 opt_ave_error_array.extend(np.mean(opt_mc_ave_error, axis=0, dtype=np.float64))
+opt_ave_error_sd.extend(np.std(opt_mc_ave_error, axis=0, dtype=np.float64))
 opt_process_time_array.extend(np.mean(opt_process_time, axis=0, dtype=np.float64))
+opt_process_time_sd.extend(np.std(opt_process_time, axis=0, dtype=np.float64))
 
 em_ave_error_array.extend(np.mean(em_mc_ave_error, axis=0, dtype=np.float64))
+em_ave_error_sd.extend(np.std(em_mc_ave_error, axis=0, dtype=np.float64))
 em_process_time_array.extend(np.mean(em_process_time, axis=0, dtype=np.float64))
+em_process_time_sd.extend(np.std(em_process_time, axis=0, dtype=np.float64))
 
 boem_ave_error_array.extend(np.mean(boem_mc_ave_error, axis=0, dtype=np.float64))
+boem_ave_error_sd.extend(np.std(boem_mc_ave_error, axis=0, dtype=np.float64))
 boem_process_time_array.extend(np.mean(boem_process_time, axis=0, dtype=np.float64))
+boem_process_time_sd.extend(np.std(boem_process_time, axis=0, dtype=np.float64))
 
 print('error', opt_ave_error_array)
 print('process_time', opt_process_time_array)
@@ -98,20 +110,32 @@ fig.set_size_inches(fig_width, fig_height)
 line_width = 1.2
 
 ax1.plot(time_array, opt_ave_error_array, '-x', color = plot_color['opt'], linewidth=line_width, label='opt.')
+ax1.fill_between(time_array, np.asarray(opt_ave_error_array)-np.asarray(opt_ave_error_sd),
+				 np.asarray(opt_ave_error_array)+np.asarray(opt_ave_error_sd), color = plot_color['opt'], alpha = 0.5)
 ax1.plot(time_array, em_ave_error_array, '-x', color = plot_color['em'], linewidth=line_width, label='EM')
+ax1.fill_between(time_array, np.asarray(em_ave_error_array)-np.asarray(em_ave_error_sd),
+				 np.asarray(em_ave_error_array)+np.asarray(em_ave_error_sd), color = plot_color['em'], alpha = 0.5)
 ax1.plot(time_array, boem_ave_error_array, '-x', color = plot_color['boem'], linewidth=line_width, label='BOEM')
+ax1.fill_between(time_array, np.asarray(boem_ave_error_array)-np.asarray(boem_ave_error_sd),
+				 np.asarray(boem_ave_error_array)+np.asarray(boem_ave_error_sd), color = plot_color['boem'], alpha = 0.5)
 
 ax1.set(ylabel='average error [m]')
-ax1.set_ylim(-0.01, 1.76)
-ax1.legend(loc = 1)
+ax1.set_ylim(-0.01, .98)
+ax1.legend()
 
 
 ax2.plot(time_array, opt_process_time_array, '-x', color = plot_color['opt'], linewidth=line_width, label='opt.')
+ax2.fill_between(time_array, np.asarray(opt_process_time_array)-np.asarray(opt_process_time_sd),
+				 np.asarray(opt_process_time_array)+np.asarray(opt_process_time_sd), color = plot_color['opt'], alpha = 0.5)
 ax2.plot(time_array, em_process_time_array, '-x', color = plot_color['em'], linewidth=line_width, label='EM')
+ax2.fill_between(time_array, np.asarray(em_process_time_array)-np.asarray(em_process_time_sd),
+				 np.asarray(em_process_time_array) + np.asarray(em_process_time_sd), color = plot_color['em'], alpha = 0.5)
 ax2.plot(time_array, boem_process_time_array, '-x', color = plot_color['boem'], linewidth=line_width, label='BOEM')
+ax2.fill_between(time_array, np.asarray(boem_process_time_array)-np.asarray(boem_process_time_sd),
+				 np.asarray(boem_process_time_array)+np.asarray(boem_process_time_sd), color = plot_color['boem'], alpha = 0.5)
 
 ax2.semilogy()
 ax2.set(ylabel='processing time [log(s)]')
 ax2.set(xlabel='time [s]')
-ax2.set_ylim(-1.6, 900)
+# ax2.set_ylim(0.1, 900)
 plt.show()
