@@ -111,10 +111,10 @@ line_width = 1.2
 
 ax1.plot(time_array, opt_ave_error_array, '-x', color = plot_color['opt'], linewidth=line_width, label='opt.')
 ax1.fill_between(time_array, np.asarray(opt_ave_error_array)-np.asarray(opt_ave_error_sd),
-				 np.asarray(opt_ave_error_array)+np.asarray(opt_ave_error_sd), color = plot_color['opt'], alpha = 0.5)
+				 np.asarray(opt_ave_error_array) + np.asarray(opt_ave_error_sd), color = plot_color['opt'], alpha = 0.5)
 ax1.plot(time_array, em_ave_error_array, '-x', color = plot_color['em'], linewidth=line_width, label='EM')
 ax1.fill_between(time_array, np.asarray(em_ave_error_array)-np.asarray(em_ave_error_sd),
-				 np.asarray(em_ave_error_array)+np.asarray(em_ave_error_sd), color = plot_color['em'], alpha = 0.5)
+				 np.asarray(em_ave_error_array) + np.asarray(em_ave_error_sd), color = plot_color['em'], alpha = 0.5)
 ax1.plot(time_array, boem_ave_error_array, '-x', color = plot_color['boem'], linewidth=line_width, label='BOEM')
 ax1.fill_between(time_array, np.asarray(boem_ave_error_array)-np.asarray(boem_ave_error_sd),
 				 np.asarray(boem_ave_error_array)+np.asarray(boem_ave_error_sd), color = plot_color['boem'], alpha = 0.5)

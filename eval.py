@@ -19,10 +19,10 @@ fig_height = 7.0
 
 # keyframe has larger time range than ground truth
 
-gt_data = pd.read_csv("../slam_demo/build/test/trajectory.csv")
-dr_data = pd.read_csv("../slam_demo/build/test/trajectory_dr.csv")
-opt_data = pd.read_csv("../slam_demo/build/test/trajectory_opt.csv")
-lmk_data = pd.read_csv("../slam_demo/build/test/landmarks.csv")
+gt_data = pd.read_csv("result/sim/gt.csv")
+dr_data = pd.read_csv("result/sim/dr.csv")
+opt_data = pd.read_csv("result/sim/opt.csv")
+lmk_data = pd.read_csv("result/sim/lmk.csv")
 # prlmk_data = pd.read_csv("../slam_demo/build/test/prot_landmarks.csv")
 # nrlmk_data = pd.read_csv("../slam_demo/build/test/nrot_landmarks.csv")
 
